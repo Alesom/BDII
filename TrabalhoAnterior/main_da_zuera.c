@@ -1,6 +1,7 @@
 //só compilar
 //formato de chamada ./main_da_zuera -t <nome_tabela> <atributo> <tipo> <tamanho> ...
 //exemplo de chamada: ./main_da_zuera -t pessoa idade I 2 nome S 20 -t endereco rua S 20 bairo S 20
+//tipos existentes : char, int, double, string
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
