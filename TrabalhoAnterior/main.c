@@ -2,6 +2,9 @@
 //formato de chamada ./main -t <nome_tabela> <atributo> <tipo> <tamanho> ...
 //exemplo de chamada: ./main -t pessoa nome S 20 idade I 2 -t endereco rua S 20 numero S 20
 //tipos existentes : char, int, double, string
+//Obs: caso sair do programa, para executar novamente, chame com todos os parametros de criação de tabelas:
+							//se chamou ./main -t pessoa nome S 20 idade I 2 -t endereco rua S 20 numero S 20 na primeira vez
+							//chame assim na segunda e nao apenas ./main
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
