@@ -1,6 +1,6 @@
-//só compilar gcc *.c -o main_da_zuera -Wall
-//formato de chamada ./main_da_zuera -t <nome_tabela> <atributo> <tipo> <tamanho> ...
-//exemplo de chamada: ./main_da_zuera -t pessoa nome S 20 idade I 2 -t endereco rua S 20 numero S 20
+//só compilar gcc *.c -o main -Wall
+//formato de chamada ./main -t <nome_tabela> <atributo> <tipo> <tamanho> ...
+//exemplo de chamada: ./main -t pessoa nome S 20 idade I 2 -t endereco rua S 20 numero S 20
 //tipos existentes : char, int, double, string
 #include <stdio.h>
 #include <stdlib.h>
