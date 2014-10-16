@@ -4,6 +4,7 @@ Alunos: Alesom Zorzi, Elias Fank e João Gehlen
 
 Do trabalho:
 O trabalho foi desenvolvido para a disciplina de Banco de Dados II, com o intuito de Criar um Banco de dados usando as bibliotecas já desenvolvidas no semestre passado.
+O trabalho, além a função main.c, tem também um outro arquivo com o nome de ERROS.txt, que consiste no relatório de erros encontrado no trabalho anterior
 O arquivo foi feito e totalmente em linux. O uso em outros sistemas operacionais não é recomendado.
 
 
