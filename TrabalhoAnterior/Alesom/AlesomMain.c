@@ -147,37 +147,33 @@ void inserirtupla(char *tabela, TableList *tabelas){
 			auxatri=aux->atributos->first;
 			while(auxatri!=NULL){
 				printf("Insira %s(%d-%c):\n",auxatri->nome, auxatri->tamanho, auxatri->tipo);
-						if(auxatri->tipo == 'C'){
-							scanf("%c", &caracter);
-							c = insereValor(c, auxatri->nome, &caracter);
-						}
-						if(auxatri->tipo == 'I'){
-							scanf("%d", &inteiro);
-							sprintf(string, "%i", inteiro);  
-							c = insereValor(c, auxatri->nome, string);
-						}
-						if(auxatri->tipo == 'D'){
-							scanf("%lf", &doublevar);
-							sprintf(string, "%lf", doublevar); 
-							c = insereValor(c, auxatri->nome, string);
-						}
-						if(auxatri->tipo == 'S'){
-							scanf("%s", string);
-							c = insereValor(c, auxatri->nome, string);
-						}
-				
+				if(auxatri->tipo == 'C'){
+					scanf("%c", &caracter);
+					c = insereValor(c, auxatri->nome, &caracter);
+				}else if(auxatri->tipo == 'I'){
+					scanf("%d", &inteiro);
+					sprintf(string, "%i", inteiro);  
+					c = insereValor(c, auxatri->nome, string);
+				}else if(auxatri->tipo == 'D'){
+					scanf("%lf", &doublevar);
+					sprintf(string, "%lf", doublevar); 
+					c = insereValor(c, auxatri->nome, string);
+				}else if(auxatri->tipo == 'S'){
+					scanf("%s", string);
+					c = insereValor(c, auxatri->nome, string);
+				}
 				auxatri=auxatri->next;
 			}
 			erro = finalizaInsert(tabela, c);
-				if(erro != SUCCESS){
-					printf("Erro %d: na função finalizaInsert()\n", erro);
-					return ;
-				}
+			if(erro != SUCCESS){
+				printf("Erro %d: na função finalizaInsert()\n", erro);
+				return ;
+			}
 		}
 		aux=aux->next;
 	}
-	
 }
+
 void mostrartabelasfinal(TableList *tabelas){
 	int erro;
 	Table *aux;
