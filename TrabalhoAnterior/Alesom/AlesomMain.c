@@ -82,7 +82,7 @@ void mostrartabelascomatributos(TableList *tabelas){
 		auxatri=aux->atributos->first;
 		printf("|%s|\n", aux->nome);
 		while(auxatri!=NULL){
-			printf("%s(%d-%c)\n",auxatri->nome, auxatri->tamanho, auxatri->tipo);
+			printf("%s(%c-%d)\n",auxatri->nome, auxatri->tipo, auxatri->tamanho);
 			auxatri=auxatri->next;
 		}
 		aux=aux->next;
