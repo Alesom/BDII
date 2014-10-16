@@ -269,8 +269,16 @@ void inicia(int *argc, char **argv){
 }*/
 
 int  main(int argc, char **argv){
+	char Menu;
+	int x;
+	char t[2];
+	TableList *tabelas=(TableList *) malloc (sizeof(TableList));
+	Table *novatabela=NULL;
+	Atributo *novoatributo=NULL;
 	FILE *arq; //bloco feito por ultimo
 	int i, tam;
+	
+	system("clear");
 	arq=fopen("inicialize.dat", "r+");
 	
 	if (arq==NULL){
@@ -303,17 +311,15 @@ int  main(int argc, char **argv){
 	
 	//fim do bloco
 
-	char t[2];
-	TableList *tabelas=(TableList *) malloc (sizeof(TableList));
-	Table *novatabela=NULL;
-	Atributo *novoatributo=NULL;
 	inicializalistatabelas(tabelas);
 	strcpy(t,"-t");
 	//printf("%d\n",argc);
-	for (i=0; i<argc-1;i++){
+	printf("O seu banco tem as sequintes tabelas:\n\n");
+	for (i=1; i<argc;i++){
 		//printf("%s %d\n", argv[i], i);
-		if (!i) continue;
 		if(strncmp(argv[i], t, 2)==0){
+			if (i!=1)
+				printf("\n\n\n");
 			printf("Tabela: %s",argv[i+1]);
 			novatabela = (Table *) malloc (sizeof(Table));
 			novatabela->nome = (char*)malloc(strlen(argv[i+1])*sizeof(char));
@@ -337,27 +343,37 @@ int  main(int argc, char **argv){
 		}
 		if((i+1)>=argc || strncmp(argv[i+1], t, 2)==0)
 			inseretabela(tabelas, novatabela);
+		printf("\n");
 	}
 	
 	//mostrartabelascomatributos(tabelas);
 	
 	criartabelas(tabelas);
-	
-	int x = 1;
+	printf("Deseja ir para o menu?\n");
+	printf("[s/n]\n");
+	scanf("%c", &Menu);
+	if (Menu=='s'){
+		x=1;
+	}else
+		x=4;
+
 	char tabela[100];
-	while(x!=3){
+	while(x!=4){
 		printf("MENU\n");
-		printf("1-inserir tupla\n");
-		printf("2-mostrar tabelas\n");
-		printf("3-Sair\n");
+		printf("1-Inserir tupla\n");
+		printf("2-Mostrar tabelas\n");
+		printf("3-Deletar o Banco de Dados e sair\n");
+		printf("4-Sair\n");
 		scanf("%d",&x);
 		if(x == 1){
 			printf("Em qual tabela deseja adicionar: ");
 			scanf("%s",tabela);
 			inserirtupla(tabela, tabelas);
-		}
-		if(x == 2){
+		}else	if(x == 2){
 			mostrartabelasfinal(tabelas);	
+		}else if (x==3){
+			system("rm -f *.dat");
+			x=4;
 		}
 	}
 	printf("\n");
