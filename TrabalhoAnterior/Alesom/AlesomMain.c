@@ -274,8 +274,11 @@ int  main(int argc, char **argv){
 	arq=fopen("inicialize.dat", "r+");
 	
 	if (arq==NULL){
+		if (argc < 2) {
+			printf("Aconteceu um erro grave! Verifique se os parâmetros da execução foram passados corretamente\n");
+			return 0;
+		}
 		arq=fopen("inicialize.dat", "w+");
-		fseek(arq, 0, SEEK_SET);
 		for (i=1;i<argc-1;i++){
 			tam=strlen(argv[i]);
 			fwrite(&tam, sizeof(int), 1, arq);
@@ -285,11 +288,9 @@ int  main(int argc, char **argv){
 		fclose(arq);
 		//le();
 	}else{ // VER COMO FAZER PARA ADICIONAR MAIS TABELAS AO BANCO
-		//le();
-		free(argv);
 		fseek(arq, 0, SEEK_SET);
-		argv=malloc(sizeof(char *) * (argc+1));
-		argv[0]=malloc(sizeof(char)*7);
+		i=0;
+		argv=malloc(sizeof(char *) * MAX);
 		for (i=1; !feof(arq);i++){
 			fread(&tam, sizeof(int), 1, arq);
 			argv[i] = malloc(sizeof(char) * (tam+1));
@@ -297,10 +298,10 @@ int  main(int argc, char **argv){
 			argv[i][tam]='\0';
 		}
 		argc=i;
+		fclose(arq);
 	}
-	fclose(arq);
+	
 	//fim do bloco
-
 
 	char t[2];
 	TableList *tabelas=(TableList *) malloc (sizeof(TableList));
@@ -308,9 +309,9 @@ int  main(int argc, char **argv){
 	Atributo *novoatributo=NULL;
 	inicializalistatabelas(tabelas);
 	strcpy(t,"-t");
-	printf("%d\n",argc);
+	//printf("%d\n",argc);
 	for (i=0; i<argc-1;i++){
-		printf("%s %d\n", argv[i], i);
+		//printf("%s %d\n", argv[i], i);
 		if (!i) continue;
 		if(strncmp(argv[i], t, 2)==0){
 			printf("Tabela: %s",argv[i+1]);
@@ -323,7 +324,6 @@ int  main(int argc, char **argv){
 			i++;
 		}else{
 			novoatributo = (Atributo *) malloc (sizeof(Atributo));
-				
 			printf("Atributo: %s ", argv[i]);
 			novoatributo->nome = (char *) malloc (strlen(argv[i])*sizeof(char));
 			strcpy(novoatributo->nome, argv[i]);
@@ -339,7 +339,7 @@ int  main(int argc, char **argv){
 			inseretabela(tabelas, novatabela);
 	}
 	
-	mostrartabelascomatributos(tabelas);
+	//mostrartabelascomatributos(tabelas);
 	
 	criartabelas(tabelas);
 	
