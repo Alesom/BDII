@@ -98,7 +98,6 @@ void criartabelas(TableList *tabelas){
 		auxatri=aux->atributos->first;
 		t = iniciaTabela(aux->nome);
 		if(t == NULL){
-			printf("Erro: na função iniciaTabela(). Nome da tabela já existente.\n");
 			return;
 		}
 		while(auxatri!=NULL){
