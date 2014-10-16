@@ -176,7 +176,9 @@ void inserirtupla(char *tabela, TableList *tabelas){
 	
 }
 void mostrartabelasfinal(TableList *tabelas){
-	int erro;
+	printf("\n");
+	printf("TABELAS\n");
+	int erro,x,flag;
 	Table *aux;
 	aux = tabelas->first;
 	while(aux!=NULL){
@@ -194,10 +196,19 @@ void mostrartabelasfinal(TableList *tabelas){
 				printf("Erro ao alocar memória para o buffer.\n");
 				return;
 			}
-
-			erro = colocaTuplaBuffer(bufferpoll, 0, esquema, objeto);
-
-			if(erro != SUCCESS){
+			x=0;
+			flag=0;
+			while(x!=-1){
+				erro = colocaTuplaBuffer(bufferpoll, x, esquema, objeto);
+				if(erro != SUCCESS){
+					if(x==0)
+					flag=1;
+					x=-1;
+				}
+				else
+				x++;
+			}
+			if(erro != SUCCESS && flag==1){
 				printf("Tabela vazia\n");
 			}
 			else{
@@ -209,12 +220,13 @@ void mostrartabelasfinal(TableList *tabelas){
 				return;
 			}
 		}
-		
+			
+			
 		aux=aux->next;
+		}
+		printf("\n");
+		return;
 	}
-	return;
-}
-
 void le(){
 	char B[MAX];
 	int tam;
@@ -246,7 +258,7 @@ int  main(int argc, char **argv){
 	system("clear");
 	arq=fopen("inicialize.dat", "r+");
 	
-	if (arq==NULL){
+	if (arq==NULL || argc > 2){
 		if (argc < 2) {
 			printf("Aconteceu um erro grave! Verifique se os parâmetros da execução foram passados corretamente\n");
 			return 0;
