@@ -145,7 +145,7 @@ void inserirtupla(char *tabela, TableList *tabelas){
 		if(!strcmp(aux->nome, tabela)){
 			auxatri=aux->atributos->first;
 			while(auxatri!=NULL){
-				printf("Insira %s(%d-%c):\n",auxatri->nome, auxatri->tamanho, auxatri->tipo);
+				printf("Insira %s(%c-%d):\n",auxatri->nome, auxatri->tipo, auxatri->tamanho);
 				if(auxatri->tipo == 'C'){
 					scanf("%c", &caracter);
 					c = insereValor(c, auxatri->nome, &caracter);
