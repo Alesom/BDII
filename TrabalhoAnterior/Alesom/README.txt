@@ -11,7 +11,7 @@ Compilar gcc *.c -o main -Wall
 formato de chamada ./main -t <nome_tabela> <atributo> <tipo> <tamanho> ...
 exemplo de chamada: ./main -t pessoa nome S 20 idade I 2 -t endereco rua S 20 numero S 20
 
-No exemplo será criado 2 tabelas pessoa, que tem como atributos nome e idade e endereco, que tem como atributos rua e numero.
+No exemplo será criado 2 tabelas, pessoa, que tem como atributos nome e idade e endereco, que tem como atributos rua e numero.
 Tipos existentes : char (C) , int (I), double (D), string (S);
 Esse processo deve ser feito na primeira vez que o programa é executado, para que as tableas sejam criadas. Depois disso a execução pode ser feita apenas com ./main  ;
 
