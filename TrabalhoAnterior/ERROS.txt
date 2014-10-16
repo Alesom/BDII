@@ -1,9 +1,0 @@
-Alesom Zorzi
-Elias Fank
-João Gehlen
-
-Não encontramos nenhum erro grave no código em sí. 
-Foram encontrados apenas alguns detalhes de implementação, de projeto, que ao ponto de vista do grupo, não podem ser tomados como bugs, ou erros e sim como limitações do programa. 
-Como por exemplo comparação entre inteiros sem e com sinal. 
-As tabelas tem limitação de 10 atributos. 
-
