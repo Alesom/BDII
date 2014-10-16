@@ -232,41 +232,6 @@ void le(){
 	}
 	fclose(arq);
 }
-/*
-void inicia(int *argc, char **argv){
-	FILE *arq;
-	int i, tam;
-	arq=fopen("inicialize.dat", "r+");
-	if (arq==NULL){
-		arq=fopen("inicialize.dat", "w+");
-		fseek(arq, 0, SEEK_END);
-		for (i=1;i<*argc-1;i++){
-			tam=strlen(argv[i]);
-			fwrite(&tam, sizeof(int), 1, arq);
-			fwrite(argv[i], sizeof(char), tam, arq);
-			fwrite(" ", 1, 1, arq);
-		}
-		fclose(arq);
-		//le();
-	}else{
-	//	le();
-		free(argv);
-		fseek(arq, 0, SEEK_SET);
-		argv=malloc(sizeof(char *) * (*argc+1));
-		//argv[0]=malloc(sizeof(char)*7);
-		for (i=1; !feof(arq);i++){
-			fread(&tam, sizeof(int), 1, arq);
-			argv[i] = malloc(sizeof(char) * (tam+1));
-			fread(argv[i], sizeof(char), tam+1, arq);
-			argv[i][tam]='\0';
-		}
-		*argc=i;
-		for (i=1;i<*argc;i++){
-			printf("AR->%s %d\n", argv[i], i);
-		}
-	}
-	fclose(arq);
-}*/
 
 int  main(int argc, char **argv){
 	char Menu;
@@ -294,7 +259,6 @@ int  main(int argc, char **argv){
 			fwrite(" ", 1, 1, arq);
 		}
 		fclose(arq);
-		//le();
 	}else{ // VER COMO FAZER PARA ADICIONAR MAIS TABELAS AO BANCO
 		fseek(arq, 0, SEEK_SET);
 		i=0;
@@ -308,15 +272,11 @@ int  main(int argc, char **argv){
 		argc=i;
 		fclose(arq);
 	}
-	
-	//fim do bloco
 
 	inicializalistatabelas(tabelas);
 	strcpy(t,"-t");
-	//printf("%d\n",argc);
 	printf("O seu banco tem as sequintes tabelas:\n\n");
 	for (i=1; i<argc;i++){
-		//printf("%s %d\n", argv[i], i);
 		if(strncmp(argv[i], t, 2)==0){
 			if (i!=1)
 				printf("\n\n\n");
@@ -346,8 +306,6 @@ int  main(int argc, char **argv){
 		printf("\n");
 	}
 	
-	//mostrartabelascomatributos(tabelas);
-	
 	criartabelas(tabelas);
 	printf("Deseja ir para o menu?\n");
 	printf("[s/n]\n");
@@ -372,8 +330,13 @@ int  main(int argc, char **argv){
 		}else	if(x == 2){
 			mostrartabelasfinal(tabelas);	
 		}else if (x==3){
-			system("rm -f *.dat");
-			x=4;
+			printf("Tem certeza que deseja excluir o banco? [s/n]\n");
+			getchar();
+			scanf("%c", &Menu);
+			if (Menu=='s'){
+				system("rm -f *.dat");
+				x=4;
+			}
 		}
 	}
 	printf("\n");
