@@ -162,6 +162,7 @@ void inserirtupla(char *tabela, TableList *tabelas){
 					scanf("%s", string);
 					c = insereValor(c, auxatri->nome, string);
 				}
+
 				auxatri=auxatri->next;
 			}
 			erro = finalizaInsert(tabela, c);
@@ -172,8 +173,8 @@ void inserirtupla(char *tabela, TableList *tabelas){
 		}
 		aux=aux->next;
 	}
+	
 }
-
 void mostrartabelasfinal(TableList *tabelas){
 	int erro;
 	Table *aux;
@@ -214,36 +215,93 @@ void mostrartabelasfinal(TableList *tabelas){
 	return;
 }
 
-void inicia(int *argc, char **argv){
-	FILE *arq;
-	int i, tam;
-	arq=fopen("inicialize.dat", "r+");
-	
-	if (arq==NULL){
-		arq=fopen("inicialize.dat", "w");
-		fseek(arq, 0, SEEK_END);
-		for (i=1;i<*argc;i++){
-			tam=strlen(argv[i]);
-			fwrite(&tam, sizeof(int), 1, arq);
-			fwrite(argv[i], sizeof(char), tam, arq);
-			fwrite(" ", 1, 1, arq);
-			printf("%d %d %s\n\n\n" , *argc, tam, argv[i]);
-		}
-	}else{
-		fseek(arq, 0, SEEK_END);
-		argv=malloc(sizeof(char *)*(*argc-1));
-		for (i=1; !feof(arq);i++){
+void le(){
+	char B[MAX];
+	int tam;
+
+	FILE *arq=fopen("inicialize.dat", "r+");
+	if (arq!=NULL){
+		printf("cadeeeente\n");
+		fseek(arq, 0, SEEK_SET);
+		while(!feof(arq)){
 			fread(&tam, sizeof(int), 1, arq);
-			argv[i]=malloc(sizeof(char)*tam);
-			fread(argv[i], sizeof(char), tam, arq);
+			fread(B, sizeof(char), tam+1, arq);
+			B[tam]='\0';
+			printf("%d %s\n", tam, B);
 		}
 	}
 	fclose(arq);
 }
+/*
+void inicia(int *argc, char **argv){
+	FILE *arq;
+	int i, tam;
+	arq=fopen("inicialize.dat", "r+");
+	if (arq==NULL){
+		arq=fopen("inicialize.dat", "w+");
+		fseek(arq, 0, SEEK_END);
+		for (i=1;i<*argc-1;i++){
+			tam=strlen(argv[i]);
+			fwrite(&tam, sizeof(int), 1, arq);
+			fwrite(argv[i], sizeof(char), tam, arq);
+			fwrite(" ", 1, 1, arq);
+		}
+		fclose(arq);
+		//le();
+	}else{
+	//	le();
+		free(argv);
+		fseek(arq, 0, SEEK_SET);
+		argv=malloc(sizeof(char *) * (*argc+1));
+		//argv[0]=malloc(sizeof(char)*7);
+		for (i=1; !feof(arq);i++){
+			fread(&tam, sizeof(int), 1, arq);
+			argv[i] = malloc(sizeof(char) * (tam+1));
+			fread(argv[i], sizeof(char), tam+1, arq);
+			argv[i][tam]='\0';
+		}
+		*argc=i;
+		for (i=1;i<*argc;i++){
+			printf("AR->%s %d\n", argv[i], i);
+		}
+	}
+	fclose(arq);
+}*/
 
 int  main(int argc, char **argv){
-	inicia(&argc, argv);
-	int i;
+	FILE *arq; //bloco feito por ultimo
+	int i, tam;
+	arq=fopen("inicialize.dat", "r+");
+	
+	if (arq==NULL){
+		arq=fopen("inicialize.dat", "w+");
+		fseek(arq, 0, SEEK_SET);
+		for (i=1;i<argc-1;i++){
+			tam=strlen(argv[i]);
+			fwrite(&tam, sizeof(int), 1, arq);
+			fwrite(argv[i], sizeof(char), tam, arq);
+			fwrite(" ", 1, 1, arq);
+		}
+		fclose(arq);
+		//le();
+	}else{ // VER COMO FAZER PARA ADICIONAR MAIS TABELAS AO BANCO
+		//le();
+		free(argv);
+		fseek(arq, 0, SEEK_SET);
+		argv=malloc(sizeof(char *) * (argc+1));
+		argv[0]=malloc(sizeof(char)*7);
+		for (i=1; !feof(arq);i++){
+			fread(&tam, sizeof(int), 1, arq);
+			argv[i] = malloc(sizeof(char) * (tam+1));
+			fread(argv[i], sizeof(char), tam+1, arq);
+			argv[i][tam]='\0';
+		}
+		argc=i;
+	}
+	fclose(arq);
+	//fim do bloco
+
+
 	char t[2];
 	TableList *tabelas=(TableList *) malloc (sizeof(TableList));
 	Table *novatabela=NULL;
@@ -251,7 +309,9 @@ int  main(int argc, char **argv){
 	inicializalistatabelas(tabelas);
 	strcpy(t,"-t");
 	printf("%d\n",argc);
-	for (i=1; i<argc-1;i++){
+	for (i=0; i<argc-1;i++){
+		printf("%s %d\n", argv[i], i);
+		if (!i) continue;
 		if(strncmp(argv[i], t, 2)==0){
 			printf("Tabela: %s",argv[i+1]);
 			novatabela = (Table *) malloc (sizeof(Table));
