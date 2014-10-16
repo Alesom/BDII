@@ -257,7 +257,7 @@ int  main(int argc, char **argv){
 	system("clear");
 	arq=fopen("inicialize.dat", "r+");
 	
-	if (arq==NULL || argc > 2){
+	if (arq==NULL ){
 		if (argc < 2) {
 			printf("Aconteceu um erro grave! Verifique se os parâmetros da execução foram passados corretamente\n");
 			return 0;
