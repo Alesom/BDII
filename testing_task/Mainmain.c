@@ -67,6 +67,7 @@ void inseretabela(TableList *tabelas, Table *novatabela){
 			novatabela->next = NULL;
 		}
 }
+
 void insereatributo(Atributos *atributos, Atributo *novoatributo){
 	atributos->quantidade++;
 	if(atributos->first == NULL){
@@ -79,6 +80,7 @@ void insereatributo(Atributos *atributos, Atributo *novoatributo){
 			novoatributo->next = NULL;
 		}
 }
+
 void mostrartabelascomatributos(TableList *tabelas){
 	printf("\nBANCO\n");
 	Table *aux;
@@ -154,17 +156,22 @@ void inserirtupla(char *tabela, TableList *tabelas){
 				printf("Insira %s(%d-%c):\n",auxatri->nome, auxatri->tamanho, auxatri->tipo);
 				if(auxatri->tipo == 'C'){
 					scanf("%c", &caracter);
+					getchar();
 					c = insereValor(c, auxatri->nome, &caracter);
 				}else if(auxatri->tipo == 'I'){
 					scanf("%d", &inteiro);
 					sprintf(string, "%i", inteiro);  
+					getchar();
 					c = insereValor(c, auxatri->nome, string);
 				}else if(auxatri->tipo == 'D'){
 					scanf("%lf", &doublevar);
 					sprintf(string, "%lf", doublevar); 
+					getchar();
 					c = insereValor(c, auxatri->nome, string);
 				}else if(auxatri->tipo == 'S'){
-					scanf("%s", string);
+					//scanf("%s", string);
+					fgets(string, auxatri->tamanho, stdin);
+					string[strlen(string)-1]='\0';
 					c = insereValor(c, auxatri->nome, string);
 				}
 
@@ -180,6 +187,7 @@ void inserirtupla(char *tabela, TableList *tabelas){
 	}
 	
 }
+
 void mostrartabelasfinal(TableList *tabelas){
 	printf("\n");
 	printf("TABELAS\n");
@@ -244,78 +252,42 @@ Table *criaTabela(char Nome[]){
 }
 
 Atributo *criaCampo(char Nome[], char tipo, int tam){
-	Atributo *novoatributo;
-	novoatributo = (Atributo *) malloc (sizeof(Atributo));
-	strcpy(novoatributo->nome, Nome);
+	//Atributo *novoatributo;
+	Atributo *novoatributo = (Atributo *) malloc (sizeof(Atributo));
+	novoatributo->nome = (char*)malloc(strlen(Nome)*sizeof(char)+2);
+	strcpy(novoatributo->nome, Nome);	
 	novoatributo->tamanho=tam;
 	novoatributo->tipo=tipo;
 	//insereatributo(novatabela->atributos, novoatributo);
+	return novoatributo;
 }
 
-
-int  main(){
-	char Menu;
-	int x;
-	char t[2];
-	TableList *tabelas=(TableList *) malloc (sizeof(TableList));
+void init(TableList *tabelas){
+	
 	Table *novatabela=NULL;
 	Atributo *novoatributo=NULL;
-	FILE *arq; //bloco feito por ultimo
-	int i, tam;
 	
 	inicializalistatabelas(tabelas);
-	
-	
-	/*strcpy(t,"-t");
-	printf("O seu banco tem as sequintes tabelas:\n\n");
-	
-	for (i=1; i<argc;i++){
-		if(strncmp(argv[i], t, 2)==0){
-			if (i!=1)
-				printf("\n\n\n");
-			printf("Tabela: %s",argv[i+1]);
-			novatabela = (Table *) malloc (sizeof(Table));
-			novatabela->nome = (char*)malloc(strlen(argv[i+1])*sizeof(char));
-			strcpy(novatabela->nome, argv[i+1]);
-			printf("--%s\n",novatabela->nome);
-			novatabela->atributos = (Atributos *) malloc(sizeof(Atributos));
-			inicializalistaatributos(novatabela->atributos);
-			i++;
-		}else{
-			novoatributo = (Atributo *) malloc (sizeof(Atributo));
-			printf("Atributo: %s ", argv[i]);
-			novoatributo->nome = (char *) malloc (strlen(argv[i])*sizeof(char));
-			strcpy(novoatributo->nome, argv[i]);
-			i++;
-			printf("Tipo: %c ", argv[i][0]);
-			novoatributo->tipo= argv[i][0];
-			i++;
-			printf("Tamanho: %s\n", argv[i]);
-			novoatributo->tamanho=atoi(argv[i]);
-			insereatributo(novatabela->atributos, novoatributo);
-		}
-		if((i+1)>=argc || strncmp(argv[i+1], t, 2)==0)
-			inseretabela(tabelas, novatabela);
-		printf("\n");
-	}*/
 	
 	/*Criação da Tabela Cliente*/
 	novatabela = criaTabela("Cliente");
 	
 	novoatributo = criaCampo("Nome", 'S', 60);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
+
 	
 	novoatributo = criaCampo("CNPJ", 'I',14);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
 	
-	novoatributo = criaCampo("Rasão Social", 'S', 60);
+	novoatributo = criaCampo("Rasao Social", 'S', 60);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
 	
-	novoatributo = criaCampo("Endereço", 'S', 200);
+	novoatributo = criaCampo("Endereco", 'S', 200);
 	insereatributo(novatabela->atributos, novoatributo);
+	
+	novoatributo = criaCampo("Telefone", 'I', 14);
+	insereatributo(novatabela->atributos, novoatributo);
+	
 	inseretabela(tabelas, novatabela);
 	
 	
@@ -324,66 +296,58 @@ int  main(){
 	
 	novoatributo = criaCampo("Id", 'I',10);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
 	
 	novoatributo = criaCampo("Nome", 'S', 50);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
 	
-	novoatributo = criaCampo("Especificação", 'S', 200);
+	novoatributo = criaCampo("Especificacao", 'S', 200);
 	insereatributo(novatabela->atributos, novoatributo);
+	
 	inseretabela(tabelas, novatabela);
 
 	/*Criação da Tabela Nota Fiscal*/
-	novatabela = criaTabela("Nota Fiscal");
+	novatabela = criaTabela("NotaFiscal");
 	
-	novoatributo = criaCampo("Número", 'I', 60);
+	novoatributo = criaCampo("Numero", 'I',  8);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
 	
-	novoatributo = criaCampo("Descrição", 200);
+	novoatributo = criaCampo("Descricao", 'S', 200);
 	insereatributo(novatabela->atributos, novoatributo);
+	
 	inseretabela(tabelas, novatabela);
 	
 	/*Criação da Tabela Funcionario*/
-	novatabela = criaTabela("Funcionário");
+	novatabela = criaTabela("Funcionario");
 	
 	novoatributo = criaCampo("Nome", 'S', 60);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
 	
 	novoatributo = criaCampo("CPF", 'I', 14);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
 	
-	novoatributo = criaCampo("Nome da mãe", 'S', 60);
+	novoatributo = criaCampo("Nome da mae", 'S', 60);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
 	
-	novoatributo = criaCampo("Endereço", 'S', 200);
+	novoatributo = criaCampo("Endereco", 'S', 200);
 	insereatributo(novatabela->atributos, novoatributo);
-	inseretabela(tabelas, novatabela);
 	
-	novoatributo = criaCampo("Fone", 'I', 15);
+	novoatributo = criaCampo("Telefone", 'I', 15);
 	insereatributo(novatabela->atributos, novoatributo);
+	
 	inseretabela(tabelas, novatabela);
-	
-	
-	
+}
 
-
-	
-	
-	
-	
-	
-	
-	
+int  main(){
+	char Menu;
+	int x;
+	TableList *tabelas=(TableList *) malloc (sizeof(TableList));
+	init(tabelas); //Incia todas as tabelas do banco;
 	
 	criartabelas(tabelas);
 	printf("Deseja ir para o menu?\n");
 	printf("[s/n]\n");
 	scanf("%c", &Menu);
+	getchar();
 	if (Menu=='s'){
 		x=1;
 	}else
@@ -397,16 +361,18 @@ int  main(){
 		printf("3-Deletar o Banco de Dados e sair\n");
 		printf("4-Sair\n");
 		scanf("%d",&x);
+		getchar();
 		if(x == 1){
 			printf("Em qual tabela deseja adicionar: ");
 			scanf("%s",tabela);
+			getchar();
 			inserirtupla(tabela, tabelas);
-		}else	if(x == 2){
+		}else if(x == 2){
 			mostrartabelasfinal(tabelas);	
 		}else if (x==3){
 			printf("Tem certeza que deseja excluir o banco? [s/n]\n");
-			getchar();
 			scanf("%c", &Menu);
+			getchar();
 			if (Menu=='s'){
 				system("rm -f *.dat");
 				x=4;
