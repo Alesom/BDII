@@ -94,6 +94,7 @@ int inserirtupla(int tabela){
 	char leitor[200];
 	system("clear");
 	if(tabela==1){
+		printf("||Cliente||\n");
 		memset(leitor, 0, sizeof (leitor));
 		printf("Digite o CPF do cliente:\n");
 		scanf("%s",leitor);
@@ -122,6 +123,7 @@ int inserirtupla(int tabela){
 		}
 	}else
 		if(tabela==2){
+			printf("||Produto||\n");
 			memset(leitor, 0, sizeof (leitor));
 			printf("Digite o Id do produto:\n");
 			scanf("%s",leitor);
@@ -145,6 +147,7 @@ int inserirtupla(int tabela){
 			}
 		}else
 			if(tabela==3){
+				printf("||NotaFiscal||\n");
 				memset(leitor, 0, sizeof (leitor));
 				printf("Digite o Id da NotaFiscal:\n");
 				scanf("%s",leitor);
@@ -168,6 +171,7 @@ int inserirtupla(int tabela){
 				}
 				}else
 					if(tabela==4){
+						printf("||ProdsNota||\n");
 						memset(leitor, 0, sizeof (leitor));
 						printf("Digite o Id que faz referencia a NotaFiscal:\n");
 						scanf("%s",leitor);
