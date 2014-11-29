@@ -257,39 +257,12 @@ int  main(int argc, char **argv){
 	TableList *tabelas=(TableList *) malloc (sizeof(TableList));
 	Table *novatabela=NULL;
 	Atributo *novoatributo=NULL;
-	FILE *arq; //bloco feito por ultimo
-	int i, tam;
+	//FILE *arq=fopen("inicialize.dat", "r+"); //bloco feito por ultimo
+	int i;
 	
 	system("clear");
-	arq=fopen("inicialize.dat", "r+");
 	
-	if (arq==NULL ){
-		if (argc < 2) {
-			printf("Aconteceu um erro grave! Verifique se os parâmetros da execução foram passados corretamente\n");
-			return 0;
-		}
-		arq=fopen("inicialize.dat", "w+");
-		for (i=1;i<argc-1;i++){
-			tam=strlen(argv[i]);
-			fwrite(&tam, sizeof(int), 1, arq);
-			fwrite(argv[i], sizeof(char), tam, arq);
-			fwrite(" ", 1, 1, arq);
-		}
-		fclose(arq);
-	}else{
-		fseek(arq, 0, SEEK_SET);
-		i=0;
-		argv=malloc(sizeof(char *) * MAX);
-		for (i=1; !feof(arq);i++){
-			fread(&tam, sizeof(int), 1, arq);
-			argv[i] = malloc(sizeof(char) * (tam+1));
-			fread(argv[i], sizeof(char), tam+1, arq);
-			argv[i][tam]='\0';
-		}
-		argc=i;
-		fclose(arq);
-	}
-
+	
 	inicializalistatabelas(tabelas);
 	strcpy(t,"-t");
 	printf("O seu banco tem as sequintes tabelas:\n\n");
