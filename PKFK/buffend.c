@@ -464,7 +464,13 @@ int finalizaTabela(table *t)
 // INSERE NA TABELA
 column *insereValor(column *c, char *nomeCampo, char *valorCampo)
 {
-	
+	/*
+
+	Aqui vai ter uma função para validar as chaves, ou da pra validar nessa função mesmo?
+
+
+	*/
+
 	column *aux;
 	if(c == NULL) // Se o valor a ser inserido é o primeiro, adiciona primeiro campo.
 	{
