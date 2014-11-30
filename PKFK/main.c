@@ -14,10 +14,10 @@ int criatabelas(void){
 		return 0;
 	}
 
-	t = adicionaCampo(t, "CPF", 'S', 10, 1, 0);
-	t = adicionaCampo(t, "Nome", 'S', 20, 0, 0);
-	t = adicionaCampo(t, "Idade", 'I', (sizeof(int)), 0, 0);
-	t = adicionaCampo(t, "Sexo", 'C', (sizeof(char)), 0, 0);
+	t = adicionaCampo(t, "CPF", 'S', 10, 1, 0, NULL);
+	t = adicionaCampo(t, "Nome", 'S', 20, 0, 0, NULL);
+	t = adicionaCampo(t, "Idade", 'I', (sizeof(int)), 0, 0, NULL);
+	t = adicionaCampo(t, "Sexo", 'C', (sizeof(char)), 0, 0, NULL);
 
 	erro = finalizaTabela(t);
 
@@ -35,9 +35,9 @@ int criatabelas(void){
 		return 0;
 	}
 
-	t = adicionaCampo(t, "Id", 'I', (sizeof(int)), 1, 0);
-	t = adicionaCampo(t, "Nome", 'S', 20, 0, 0);
-	t = adicionaCampo(t, "Especificacao", 'S', 50, 0, 0);
+	t = adicionaCampo(t, "Id", 'I', (sizeof(int)), 1, 0, NULL);
+	t = adicionaCampo(t, "Nome", 'S', 20, 0, 0, NULL);
+	t = adicionaCampo(t, "Especificacao", 'S', 50, 0, 0, NULL);
 
 	erro = finalizaTabela(t);
 
@@ -55,9 +55,9 @@ int criatabelas(void){
 		return 0;
 	}
 
-	t = adicionaCampo(t, "Id", 'I', (sizeof(int)), 1, 0);
-	t = adicionaCampo(t, "CPFCliente", 'I', (sizeof(int)), 0, 1);
-	t = adicionaCampo(t, "Comentario", 'S', 50, 0, 0);
+	t = adicionaCampo(t, "Id", 'I', (sizeof(int)), 1, 0, NULL);
+	t = adicionaCampo(t, "CPFCliente", 'I', (sizeof(int)), 0, 1, "Cliente");
+	t = adicionaCampo(t, "Comentario", 'S', 50, 0, 0, NULL);
 
 	erro = finalizaTabela(t);
 
@@ -75,9 +75,9 @@ int criatabelas(void){
 		return 0;
 	}
 
-	t = adicionaCampo(t, "IdNota", 'I', (sizeof(int)), 1, 1);
-	t = adicionaCampo(t, "IdProduto", 'I', (sizeof(int)), 1, 1);
-	t = adicionaCampo(t, "QtdProduto", 'I', (sizeof(int)), 0, 0);
+	t = adicionaCampo(t, "IdNota", 'I', (sizeof(int)), 1, 1, "NotaFiscal");
+	t = adicionaCampo(t, "IdProduto", 'I', (sizeof(int)), 1, 1, "Produto");
+	t = adicionaCampo(t, "QtdProduto", 'I', (sizeof(int)), 0, 0, NULL);
 
 	erro = finalizaTabela(t);
 
