@@ -1,4 +1,6 @@
 #include "buffend.h"
+#include "biblioteca.h"
+
 // LEITURA DE DICIONARIO E ESQUEMA
 
 struct fs_objects leObjeto(char *nTabela){
@@ -66,10 +68,13 @@ tp_table *leSchema (struct fs_objects objeto){
 				strcpy(esquema[i].nome,tupla);					// Copia dados do campo para o esquema.
 				fread(&esquema[i].tipo, sizeof(char),1,schema);      
 				fread(&esquema[i].tam, sizeof(int),1,schema);   
-				i++;    		
+				fread(&esquema[i].pk, sizeof (int), 1, schema);
+				fread(&esquema[i].fk, sizeof (int), 1, schema);
+				fread(esquema[i].ref, sizeof (char), TAMANHO_NOME_TABELA, schema);
+				i++; 
 			}
 			else
-				fseek(schema, 100+45+8, 1); // Pula a quantidade de caracteres para a proxima verificacao (40B do nome, 1B do tipo e 4B do tamanho). 
+				fseek(schema, 45, 1); // Pula a quantidade de caracteres para a proxima verificacao ( do nome, 1B do tipo e 4B do tamanho). 
 					/*foi alterado para os novos valores 100 do nome da tabela referênciada e 8 de dois inteiros.*/
 		}
 	}
@@ -219,7 +224,7 @@ int tamTupla(tp_table *esquema, struct fs_objects objeto){// Retorna o tamanho t
 
     int qtdCampos = objeto.qtdCampos, i, tamanhoGeral = 0;
    
-    if(qtdCampos){ // Lê o primeiro inteiro que representa a quantidade de campos da tabela.
+	if(qtdCampos){ // Lê o primeiro inteiro que representa a quantidade de campos da tabela.
 		for(i = 0; i < qtdCampos; i++)
 			tamanhoGeral += esquema[i].tam; // Soma os tamanhos de cada campo da tabela.
 	}
@@ -347,6 +352,7 @@ void setTupla(tp_buffer *buffer,char *tupla, int tam, int pos){ //Coloca uma tup
 	for (;i<buffer[pos].position + tam;i++)
         buffer[pos].data[i] = *(tupla++);
 }
+
 int colocaTuplaBuffer(tp_buffer *buffer, int from, tp_table *campos, struct fs_objects objeto){//Define a página que será incluida uma nova tupla
 	
 	char *tupla = getTupla(campos,objeto,from);
@@ -476,9 +482,10 @@ int finalizaTabela(table *t)
 }
 //-----------------------------------------
 // INSERE NA TABELA
-column *insereValor(column *c, char *nomeCampo, char *valorCampo, int pk, int fk, char nome[])
+column *insereValor(column *c, char *nomeCampo, char *valorCampo, int pk, int fk, char nomeDaTabela[])
 {
-	
+	if (ValidaCampos(nomeDaTabela)==ERRO_INSERIR_VALOR)
+		return ERRO_INSERIR_VALOR;
 	/*
 
 	Aqui vai ter uma função para validar as chaves, ou da pra validar nessa função mesmo?
