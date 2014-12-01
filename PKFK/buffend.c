@@ -71,7 +71,7 @@ tp_table *leSchema (struct fs_objects objeto){
 			else
 				fseek(schema, 100+45+8, 1); // Pula a quantidade de caracteres para a proxima verificacao (40B do nome, 1B do tipo e 4B do tamanho). 
 					/*foi alterado para os novos valores 100 do nome da tabela referênciada e 8 de dois inteiros.*/
-		}	
+		}
 	}
 	return esquema;
 }
@@ -341,6 +341,7 @@ char *getTupla(tp_table *campos,struct fs_objects objeto, int from){ //Pega uma 
     fclose(dados);
     return linha;
 }
+
 void setTupla(tp_buffer *buffer,char *tupla, int tam, int pos){ //Coloca uma tupla de tamanho "tam" no buffer e na página "pos"
 	int i=buffer[pos].position;
 	for (;i<buffer[pos].position + tam;i++)
@@ -465,7 +466,7 @@ int finalizaTabela(table *t)
 	strcat(nomeArquivo, ".dat\0");
 	strcat(t->nome, "\0");
 	// Salva dados sobre a tabela no dicionario.
-    fwrite(&t->nome,sizeof(t->nome),1,dicionario);
+	fwrite(&t->nome,sizeof(t->nome),1,dicionario);
 	fwrite(&codTbl,sizeof(codTbl),1,dicionario);
 	fwrite(&nomeArquivo,sizeof(nomeArquivo),1,dicionario);
 	fwrite(&qtdCampos,sizeof(qtdCampos),1,dicionario);
@@ -475,8 +476,9 @@ int finalizaTabela(table *t)
 }
 //-----------------------------------------
 // INSERE NA TABELA
-column *insereValor(column *c, char *nomeCampo, char *valorCampo)
+column *insereValor(column *c, char *nomeCampo, char *valorCampo, int pk, int fk, char nome[])
 {
+	
 	/*
 
 	Aqui vai ter uma função para validar as chaves, ou da pra validar nessa função mesmo?
