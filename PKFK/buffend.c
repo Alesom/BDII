@@ -1,5 +1,6 @@
 #include "buffend.h"
 // LEITURA DE DICIONARIO E ESQUEMA
+
 struct fs_objects leObjeto(char *nTabela){
 
 	FILE *dicionario;
@@ -21,25 +22,26 @@ struct fs_objects leObjeto(char *nTabela){
 	
 
 	while(fgetc (dicionario) != EOF){
-        fseek(dicionario, -1, 1);
+		fseek(dicionario, -1, 1);
 
-        fread(tupla, sizeof(char), TAMANHO_NOME_TABELA , dicionario); //Lê somente o nome da tabela
+		fread(tupla, sizeof(char), TAMANHO_NOME_TABELA , dicionario); //Lê somente o nome da tabela
 
-        if(strcmp(tupla, nTabela) == 0){ // Verifica se o nome dado pelo usuario existe no dicionario de dados.
-      		strcpy(objeto.nome, tupla);
-      		fread(&cod,sizeof(int),1,dicionario);	// Copia valores referentes a tabela pesquisada para a estrutura.
-      		objeto.cod=cod;
-      		fread(tupla,sizeof(char),TAMANHO_NOME_TABELA,dicionario);
-      		strcpy(objeto.nArquivo, tupla);
-      		fread(&cod,sizeof(int),1,dicionario);
-      		objeto.qtdCampos = cod;
-      		
-        	return objeto;
-        }
-        fseek(dicionario, 28, 1); // Pula a quantidade de caracteres para a proxima verificacao(4B do codigo, 20B do nome do arquivo e 4B da quantidade de campos).
+		if(strcmp(tupla, nTabela) == 0){ // Verifica se o nome dado pelo usuario existe no dicionario de dados.
+			strcpy(objeto.nome, tupla);
+			fread(&cod,sizeof(int),1,dicionario);	// Copia valores referentes a tabela pesquisada para a estrutura.
+			objeto.cod=cod;
+			fread(tupla,sizeof(char),TAMANHO_NOME_TABELA,dicionario);
+			strcpy(objeto.nArquivo, tupla);
+			fread(&cod,sizeof(int),1,dicionario);
+			objeto.qtdCampos = cod;
+			
+			return objeto;
+		}
+		fseek(dicionario, 28, 1); // Pula a quantidade de caracteres para a proxima verificacao(4B do codigo, 20B do nome do arquivo e 4B da quantidade de campos).
 	}
 	return objeto;
 }
+
 tp_table *leSchema (struct fs_objects objeto){
 	FILE *schema;
 	int i = 0, cod;
@@ -55,23 +57,23 @@ tp_table *leSchema (struct fs_objects objeto){
 		return ERRO_ABRIR_ESQUEMA;
 
 	while((fgetc (schema) != EOF) && (i < objeto.qtdCampos)){ // Varre o arquivo ate encontrar todos os campos com o codigo da tabela.
-        fseek(schema, -1, 1);
+		fseek(schema, -1, 1);
 
-        if(fread(&cod, sizeof(int), 1, schema)){ // Le o codigo da tabela.
-        	if(cod == objeto.cod){ // Verifica se o campo a ser copiado e da tabela que esta na estrutura fs_objects.
-        		
-        		fread(tupla, sizeof(char), TAMANHO_NOME_CAMPO, schema);
-        		strcpy(esquema[i].nome,tupla);					// Copia dados do campo para o esquema.
-        		fread(&esquema[i].tipo, sizeof(char),1,schema);      
-        		fread(&esquema[i].tam, sizeof(int),1,schema);   
-        		i++;    		
-        	}
-        	else
-        		fseek(schema, 45, 1); // Pula a quantidade de caracteres para a proxima verificacao (40B do nome, 1B do tipo e 4B do tamanho).
-        }
-        
-    }
-    return esquema;
+		if(fread(&cod, sizeof(int), 1, schema)){ // Le o codigo da tabela.
+			if(cod == objeto.cod){ // Verifica se o campo a ser copiado e da tabela que esta na estrutura fs_objects.
+				
+				fread(tupla, sizeof(char), TAMANHO_NOME_CAMPO, schema);
+				strcpy(esquema[i].nome,tupla);					// Copia dados do campo para o esquema.
+				fread(&esquema[i].tipo, sizeof(char),1,schema);      
+				fread(&esquema[i].tam, sizeof(int),1,schema);   
+				i++;    		
+			}
+			else
+				fseek(schema, 100+45+8, 1); // Pula a quantidade de caracteres para a proxima verificacao (40B do nome, 1B do tipo e 4B do tamanho). 
+					/*foi alterado para os novos valores 100 do nome da tabela referênciada e 8 de dois inteiros.*/
+		}	
+	}
+	return esquema;
 }
 //--------------------------------------------------
 // INICIALIZACAO DO BUFFER
