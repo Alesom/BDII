@@ -22,6 +22,7 @@ typedef struct tp_table{ // Estrutura usada para carregar fs_schema.dat
 	int tam;						// Tamanho do Campo.
 	int pk;
 	int fk;
+	char ref[100];
 	struct tp_table *next;			// Encadeamento para o próximo campo.
 }tp_table;
 

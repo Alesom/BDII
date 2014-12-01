@@ -396,6 +396,10 @@ table *adicionaCampo(table *t,char *nomeCampo, char tipoCampo, int tamanhoCampo,
 		e->tam = tamanhoCampo; // Copia tamanho do campo passado para o esquema
 		e->pk = pk;
 		e->fk = fk;
+		if(ref!=NULL){
+			strcat(ref,"\0");
+			strcpy(e->ref,ref);
+		}
 		t->esquema = e; 
 		return t; // Retorna a estrutura
 	}
@@ -412,6 +416,10 @@ table *adicionaCampo(table *t,char *nomeCampo, char tipoCampo, int tamanhoCampo,
 				e->tam = tamanhoCampo;
 				e->pk = pk;
 				e->fk = fk;
+				if(ref!=NULL){
+					strcat(ref,"\0");
+					strcpy(e->ref,ref);
+				}
 				aux->next = e; // Faz o campo anterior apontar para o campo inserido.
 				return t;
 			}
@@ -439,6 +447,9 @@ int finalizaTabela(table *t)
 		fwrite(&aux->nome,sizeof(aux->nome),1,esquema);
 		fwrite(&aux->tipo,sizeof(aux->tipo),1,esquema);
 		fwrite(&aux->tam,sizeof(aux->tam),1,esquema);
+		fwrite(&aux->pk,sizeof(aux->pk),1,esquema);
+		fwrite(&aux->fk,sizeof(aux->fk),1,esquema);
+		fwrite(&aux->ref,sizeof(aux->ref),1,esquema);
 
 		qtdCampos++; // Soma quantidade total de campos inseridos.
 	}
