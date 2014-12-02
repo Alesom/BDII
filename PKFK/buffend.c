@@ -393,6 +393,7 @@ table *iniciaTabela(char *nome)
 	t->esquema = NULL; // Inicia o esquema da tabela com NULL.
 	return t; // Retorna estrutura para criação de uma tabela.
 }
+
 table *adicionaCampo(table *t,char *nomeCampo, char tipoCampo, int tamanhoCampo, int pk, int fk, char *ref)
 {
 	if(t == NULL) // Se a estrutura passada for nula, retorna erro.
@@ -446,24 +447,31 @@ int finalizaTabela(table *t)
 
 	FILE *esquema, *dicionario;
 	tp_table *aux;
-	int codTbl = quantidadeTabelas() + 1, qtdCampos = 0; // Conta a quantidade de tabelas já no dicionario e soma 1 no codigo dessa nova tabela.
+	int codTbl = quantidadeTabelas() + 1, qtdCampos = 0, flag=0; // Conta a quantidade de tabelas já no dicionario e soma 1 no codigo dessa nova tabela.
 	char nomeArquivo[TAMANHO_NOME_ARQUIVO];
 
 	if((esquema = fopen("fs_schema.dat","a+b")) == NULL)
-        return ERRO_ABRIR_ARQUIVO;
+		return ERRO_ABRIR_ARQUIVO;
 
 	for(aux = t->esquema; aux!=NULL; aux = aux->next) // Salva novos campos no esquema da tabela, fs_schema.dat
 	{
-		fwrite(&codTbl,sizeof(codTbl),1,esquema);
-		fwrite(&aux->nome,sizeof(aux->nome),1,esquema);
-		fwrite(&aux->tipo,sizeof(aux->tipo),1,esquema);
-		fwrite(&aux->tam,sizeof(aux->tam),1,esquema);
-		fwrite(&aux->pk,sizeof(aux->pk),1,esquema);
-		fwrite(&aux->fk,sizeof(aux->fk),1,esquema);
-		fwrite(&aux->ref,sizeof(aux->ref),1,esquema);
+		if(!aux->fk || (aux->fk && !verificaNomeTabela(t->esquema->nome))){ 
+			fwrite(&codTbl,sizeof(codTbl),1,esquema);
+			fwrite(&aux->nome,sizeof(aux->nome),1,esquema);
+			fwrite(&aux->tipo,sizeof(aux->tipo),1,esquema);
+			fwrite(&aux->tam,sizeof(aux->tam),1,esquema);
+			fwrite(&aux->pk,sizeof(aux->pk),1,esquema);
+			fwrite(&aux->fk,sizeof(aux->fk),1,esquema);
+			fwrite(&aux->ref,sizeof(aux->ref),1,esquema);
 
-		qtdCampos++; // Soma quantidade total de campos inseridos.
+			qtdCampos++; // Soma quantidade total de campos inseridos.
+		}else if (aux->fk){
+			flag=1;
+		}
 	}
+	
+	if (flag)
+		return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_VALIDA;
 
 	fclose(esquema);
 
@@ -523,11 +531,13 @@ column *insereValor(column *c, char *nomeCampo, char *valorCampo, int pk, int fk
 
 	return ERRO_INSERIR_VALOR;
 }
+
 int finalizaInsert(char *nome, column *c)
 {
 	column *auxC, *j;
-	int i = 0, x = 0, t;
+	int i = 0, x = 0, t, k;
 	FILE *dados;
+	char *NomeAuxiliar;
 
 	struct fs_objects dicio = leObjeto(nome); // Le dicionario
 	tp_table *auxT = leSchema(dicio); // Le esquema
@@ -539,19 +549,38 @@ int finalizaInsert(char *nome, column *c)
 	{
 		if(t >= dicio.qtdCampos)
 			t = 0;
-		
-		for (j=c; auxC != j; j=j->next){ //verifica se existe um elemento que tem uma chave primaria igual a outro arquivo existente na lista
-			if (strncmp(j->valorCampo, auxC->valorCampo, auxT[t].tam)==0)
-				return ERRO_CAMPO_JA_EXISTENTE;
-		}
-		
-		if (fopen(nome, "r") != NULL){ //se existe um arquivo, ferifica no arquivo; 
-			if (ValidaCampos(nome, auxC->valorCampo)==ERRO_CAMPO_JA_EXISTENTE){
-				printf("conflito\n");
-				return ERRO_CAMPO_JA_EXISTENTE;	
+			
+		if (auxT[t].pk==1){// se for chave primária, executa esse if 
+			for (j=c; auxC != j; j=j->next){ //verifica se existe um elemento que tem uma chave primaria igual a outro arquivo existente na lista
+				if (strncmp(j->valorCampo, auxC->valorCampo, auxT[t].tam)==0)
+					return ERRO_CAMPO_JA_EXISTENTE;
+			}
+			
+			//printf("%s\n", nome);
+			NomeAuxiliar=malloc(sizeof(char)*strlen(nome)+6);
+			if (NomeAuxiliar==NULL)
+				return ERRO_NAO_HA_ESPACO;
+			strcpy(NomeAuxiliar, nome);
+			strcat(NomeAuxiliar, ".dat");
+			
+		//	printf("%s\n", NomeAuxiliar);
+			
+			FILE *aux1=fopen(NomeAuxiliar, "r");
+			if (aux1 != NULL){ //se existe um arquivo, ferifica no arquivo; 
+				fclose (aux1);
+				k=ValidaCampos(nome, auxC->valorCampo);
+				//printf("%d\n", k);
+				if (k==ERRO_CAMPO_JA_EXISTENTE){
+					printf("conflito\n");
+					return ERRO_CAMPO_JA_EXISTENTE;	
+				}
+			}
+		}else if (auxT[t].fk==1){
+			k=ValidaCampos(nome, auxC->valorCampo);
+			if (k==ERRO_CAMPO_NAO_EXISTE){
+				
 			}
 		}
-		
 		
 		if(auxT[t].tipo == 'S'){ // Grava um dado do tipo string.
 			if(sizeof(auxC->valorCampo) > auxT[t].tam){

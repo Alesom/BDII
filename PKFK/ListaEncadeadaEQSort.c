@@ -5,14 +5,15 @@
 int main(){
 	//printf("cu");
 	table *t;
-
+	int k;
+	
 	t= iniciaTabela("Cliente");
 	
 	t= adicionaCampo(t, "Nome", 'S', 60, 0, 0, NULL);
 	t= adicionaCampo(t, "CNPJ", 'S', 14, 1, 0, "Cliente");
 	t= adicionaCampo(t, "RasaoSocial", 'S', 60, 0, 0, NULL);
 	t= adicionaCampo(t, "Edereco", 'S', 60, 0, 0, NULL);
-	t= adicionaCampo(t, "Telefone", 'S', 14, 0, 0, NULL);
+	t= adicionaCampo(t, "Telefone", 'S', 14, 0, 1, NULL);
 	
 	if(finalizaTabela(t)!=SUCCESS){
 		printf("pobrema\n"); return 0;
@@ -24,9 +25,10 @@ int main(){
 	c = insereValor(c, "CNPJ", "1458782", 1, 0, "Cliente");
 	c = insereValor(c, "RasaoSocial", "SocialRasao.br", 0, 0, NULL);
 	c = insereValor(c, "Edereco", "Ruacoco", 0, 0, NULL);
-	c = insereValor(c, "Telefone", "146548", 0, 0, NULL);
+	c = insereValor(c, "Telefone", "146548", 0, 1, NULL);
 	
-	finalizaInsert("Cliente", c);
+	k=finalizaInsert("Cliente", c);
+	printf("%d\n", k);
 	
 	c = insereValor(c, "Nome", "keuere", 0, 0, NULL);
 	c = insereValor(c, "CNPJ", "1458782", 1, 0, "Cliente");
@@ -35,7 +37,7 @@ int main(){
 	c = insereValor(c, "Telefone", "146548", 0, 0, NULL);
 	//while (1);
 	
-	int k=finalizaInsert("Cliente", c);
+	k=finalizaInsert("Cliente", c);
 	printf("%d\n", k);
 	
 	if(k!=SUCCESS){
@@ -48,7 +50,8 @@ int main(){
 int ValidaCampos(char NomeDaTabela[], char *dt){
 	int Tam, i, EsquemaAcumu;
 	FILE *data;
-	char *BUFFER;
+	char *BUFFER, *NomeAuxiliar;
+	
 	struct fs_objects objeto = leObjeto(NomeDaTabela);
 	tp_table *esquema = leSchema(objeto);
 	
@@ -62,14 +65,22 @@ int ValidaCampos(char NomeDaTabela[], char *dt){
 	if (BUFFER==NULL)
 		return ERRO_NAO_HA_ESPACO;
 	
-	//printf("\n\n\n%s\n\n\n\n", NomeDaTabela);	
-	data=fopen(NomeDaTabela, "r");
+	NomeAuxiliar= (char *)malloc(sizeof(char)*strlen(NomeDaTabela)+6);
+	
+	if (NomeAuxiliar == NULL)
+		return ERRO_NAO_HA_ESPACO;
+	
+	strcpy(NomeAuxiliar, NomeDaTabela);
+	strcat(NomeAuxiliar, ".dat");
+		
+	data=fopen(NomeAuxiliar, "r");
 	
 	if (data==NULL){
 		return ERRO_ABRIR_ARQUIVO;
 	}
-		
+
 	fseek(data, 0, SEEK_SET);
+	
 	for (i=EsquemaAcumu=0;i < objeto.qtdCampos; i++){
 		//printf("%s %c %d %d %d %s\n", esquema[i].nome, esquema[i].tipo, esquema[i].tam, esquema[i].pk, esquema[i].fk, esquema[i].ref);   
 		if (esquema[i].pk){
@@ -99,7 +110,7 @@ int ValidaCampos(char NomeDaTabela[], char *dt){
 		}
 		EsquemaAcumu+=esquema[i].tam;
 	}
-	
+	fclose(data);
 	return 0;
 }
 
