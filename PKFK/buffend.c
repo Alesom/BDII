@@ -465,9 +465,6 @@ int finalizaTabela(table *t)
 			fwrite(&aux->pk,sizeof(aux->pk),1,esquema);
 			fwrite(&aux->fk,sizeof(aux->fk),1,esquema);
 			fwrite(&aux->ref,sizeof(aux->ref),1,esquema);
-			printf("essa: %s\n",aux->nome);
-			printf("essa: %s\n",aux->ref);
-
 			qtdCampos++; // Soma quantidade total de campos inseridos.
 		}else if (aux->fk){
 			flag=1;
