@@ -20,7 +20,7 @@ typedef struct {
 	Nodo_t *Last;
 } sentinela_lista2_t;
 
-int *ValidaCampos(char NomeDaTabela[]);
+int ValidaCampos(char NomeDaTabela[], char *dt);
 
 void insert (Dado novo, sentinela_lista2_t *lista);
 

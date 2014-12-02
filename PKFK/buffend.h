@@ -159,7 +159,7 @@ int finalizaTabela(table *t);
 	*nomeCampo - Nome do campo que o usuário vai inserir um valor.
 	*valorCampo - Valor do campo que vai ser inserido.
 */
-column *insereValor(column *c, char *nomeCampo, char *valorCampo, int pk, int fk, char nomeDaTabela[]);
+column *insereValor(column *c, char *nomeCampo, char *valorCampo);
 /*
 	Esta função finaliza a inserção de valores em uma tabela. Assume que o usuário entrou com todos os campos de uma tupla completa.
 	Retorna: 

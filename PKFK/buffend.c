@@ -66,15 +66,15 @@ tp_table *leSchema (struct fs_objects objeto){
 				
 				fread(tupla, sizeof(char), TAMANHO_NOME_CAMPO, schema);
 				strcpy(esquema[i].nome,tupla);					// Copia dados do campo para o esquema.
-				fread(&esquema[i].tipo, sizeof(char),1,schema);      
-				fread(&esquema[i].tam, sizeof(int),1,schema);   
+				fread(&esquema[i].tipo, sizeof(char),1,schema);
+				fread(&esquema[i].tam, sizeof(int),1,schema);  
 				fread(&esquema[i].pk, sizeof (int), 1, schema);
 				fread(&esquema[i].fk, sizeof (int), 1, schema);
 				fread(esquema[i].ref, sizeof (char), TAMANHO_NOME_TABELA, schema);
 				i++; 
 			}
 			else{
-				int seila=sizeof(tp_table)+sizeof(esquema->next);
+				int seila=sizeof(struct tp_table)-sizeof(esquema->next);
 				fseek(schema, seila, 1); // Pula a quantidade de caracteres para a proxima verificacao ( do nome, 1B do tipo e 4B do tamanho). 
 					/*foi alterado para os novos valores 100 do nome da tabela referênciada e 8 de dois inteiros.*/
 			}
@@ -408,10 +408,11 @@ table *adicionaCampo(table *t,char *nomeCampo, char tipoCampo, int tamanhoCampo,
 		e->tam = tamanhoCampo; // Copia tamanho do campo passado para o esquema
 		e->pk = pk;
 		e->fk = fk;
-		if(ref!=NULL){
+		if(ref!=NULL && fk==1){
 			strcat(ref,"\0");
 			strcpy(e->ref,ref);
-		}
+		}else
+		memset(e->ref, 0, sizeof (e->ref));
 		t->esquema = e; 
 		return t; // Retorna a estrutura
 	}
@@ -428,10 +429,11 @@ table *adicionaCampo(table *t,char *nomeCampo, char tipoCampo, int tamanhoCampo,
 				e->tam = tamanhoCampo;
 				e->pk = pk;
 				e->fk = fk;
-				if(ref!=NULL){
+				if(ref!=NULL && fk==1){
 					strcat(ref,"\0");
 					strcpy(e->ref,ref);
-				}
+				}else
+				memset(e->ref, 0, sizeof (e->ref));
 				aux->next = e; // Faz o campo anterior apontar para o campo inserido.
 				return t;
 			}
@@ -463,6 +465,8 @@ int finalizaTabela(table *t)
 			fwrite(&aux->pk,sizeof(aux->pk),1,esquema);
 			fwrite(&aux->fk,sizeof(aux->fk),1,esquema);
 			fwrite(&aux->ref,sizeof(aux->ref),1,esquema);
+			printf("essa: %s\n",aux->nome);
+			printf("essa: %s\n",aux->ref);
 
 			qtdCampos++; // Soma quantidade total de campos inseridos.
 		}else if (aux->fk){
@@ -492,14 +496,8 @@ int finalizaTabela(table *t)
 }
 //-----------------------------------------
 // INSERE NA TABELA
-column *insereValor(column *c, char *nomeCampo, char *valorCampo, int pk, int fk, char nomeDaTabela[])
+column *insereValor(column *c, char *nomeCampo, char *valorCampo)
 {
-	/*
-
-	Aqui vai ter uma função para validar as chaves, ou da pra validar nessa função mesmo?
-
-
-	*/
 
 	column *aux;
 	if(c == NULL) // Se o valor a ser inserido é o primeiro, adiciona primeiro campo.
@@ -566,7 +564,7 @@ int finalizaInsert(char *nome, column *c)
 		//	printf("%s\n", NomeAuxiliar);
 			
 			FILE *aux1=fopen(NomeAuxiliar, "r");
-			if (aux1 != NULL){ //se existe um arquivo, ferifica no arquivo; 
+			if (aux1 != NULL){ //se existe um arquivo, verifica no arquivo; 
 				fclose (aux1);
 				k=ValidaCampos(nome, auxC->valorCampo);
 				//printf("%d\n", k);
@@ -578,7 +576,7 @@ int finalizaInsert(char *nome, column *c)
 		}else if (auxT[t].fk==1){
 			k=ValidaCampos(nome, auxC->valorCampo);
 			if (k==ERRO_CAMPO_NAO_EXISTE){
-				
+				return ERRO_CAMPO_NAO_EXISTE;
 			}
 		}
 		

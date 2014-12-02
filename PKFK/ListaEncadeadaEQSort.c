@@ -1,7 +1,7 @@
 #include "biblioteca.h"
 #include "buffend.h"
 #include "erros.h"
-
+/*
 int main(){
 	//printf("cu");
 	table *t;
@@ -31,7 +31,7 @@ int main(){
 	printf("%d\n", k);
 	
 	c = insereValor(c, "Nome", "keuere", 0, 0, NULL);
-	c = insereValor(c, "CNPJ", "1458782", 1, 0, "Cliente");
+	c = insereValor(c, "CNPJ", "1458783", 1, 0, "Cliente");
 	c = insereValor(c, "RasaoSocial", "keuregatinha", 0, 0, NULL);
 	c = insereValor(c, "Edereco", "Atleticodeibirama", 0, 0, NULL);
 	c = insereValor(c, "Telefone", "146548", 0, 0, NULL);
@@ -46,7 +46,7 @@ int main(){
 	}
 	return 0;
 }
-
+*/
 int ValidaCampos(char NomeDaTabela[], char *dt){
 	int Tam, i, EsquemaAcumu;
 	FILE *data;
