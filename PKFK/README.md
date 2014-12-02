@@ -31,4 +31,11 @@ int ValidaCampos(char NomeDaTabela[], char *dt);
 Que está sendo chamada dentro da funçao finalizaInsert()
 Para validar os dados de entrada das tuplas.
 
+Da Compilação:
+gcc *.c -o main -Wall
+
+Para testar as funções de validação foi criada a main
+que pode ser usada depois da compilação com:
+./main
+
 
