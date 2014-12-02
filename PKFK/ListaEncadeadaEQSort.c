@@ -3,29 +3,104 @@
 #include "erros.h"
 
 int main(){
-	printf("cu");
+	//printf("cu");
+	table *t;
+
+	t= iniciaTabela("Cliente");
+	
+	t= adicionaCampo(t, "Nome", 'S', 60, 0, 0, NULL);
+	t= adicionaCampo(t, "CNPJ", 'S', 14, 1, 0, "Cliente");
+	t= adicionaCampo(t, "RasaoSocial", 'S', 60, 0, 0, NULL);
+	t= adicionaCampo(t, "Edereco", 'S', 60, 0, 0, NULL);
+	t= adicionaCampo(t, "Telefone", 'S', 14, 0, 0, NULL);
+	
+	if(finalizaTabela(t)!=SUCCESS){
+		printf("pobrema\n"); return 0;
+	}
+	
+	column *c=NULL;
+	
+	c = insereValor(c, "Nome", "ALESOM", 0, 0, NULL);
+	c = insereValor(c, "CNPJ", "1458782", 1, 0, "Cliente");
+	c = insereValor(c, "RasaoSocial", "SocialRasao.br", 0, 0, NULL);
+	c = insereValor(c, "Edereco", "Ruacoco", 0, 0, NULL);
+	c = insereValor(c, "Telefone", "146548", 0, 0, NULL);
+	
+	finalizaInsert("Cliente", c);
+	
+	c = insereValor(c, "Nome", "keuere", 0, 0, NULL);
+	c = insereValor(c, "CNPJ", "1458782", 1, 0, "Cliente");
+	c = insereValor(c, "RasaoSocial", "keuregatinha", 0, 0, NULL);
+	c = insereValor(c, "Edereco", "Atleticodeibirama", 0, 0, NULL);
+	c = insereValor(c, "Telefone", "146548", 0, 0, NULL);
+	//while (1);
+	
+	int k=finalizaInsert("Cliente", c);
+	printf("%d\n", k);
+	
+	if(k!=SUCCESS){
+		//printf("Erro\n");
+		return 0;
+	}
 	return 0;
 }
 
-int *ValidaCampos(char NomeDaTabela[]){
-	int Tam, i;
+int ValidaCampos(char NomeDaTabela[], char *dt){
+	int Tam, i, EsquemaAcumu;
+	FILE *data;
+	char *BUFFER;
 	struct fs_objects objeto = leObjeto(NomeDaTabela);
 	tp_table *esquema = leSchema(objeto);
 	
 	if (esquema==ERRO_ABRIR_ESQUEMA)
-		return ERRO_INSERIR_VALOR;
+		return ERRO_O_VALOR_NAO_PODE_SER_INSERIDO;
+	
 	
 	Tam=tamTupla(esquema, objeto);
+	BUFFER=malloc(sizeof(char)*Tam);
+
+	if (BUFFER==NULL)
+		return ERRO_NAO_HA_ESPACO;
 	
-	for (i=0;i < objeto.qtdCampos; i++){
+	//printf("\n\n\n%s\n\n\n\n", NomeDaTabela);	
+	data=fopen(NomeDaTabela, "r");
+	
+	if (data==NULL){
+		return ERRO_ABRIR_ARQUIVO;
+	}
 		
+	fseek(data, 0, SEEK_SET);
+	for (i=EsquemaAcumu=0;i < objeto.qtdCampos; i++){
+		//printf("%s %c %d %d %d %s\n", esquema[i].nome, esquema[i].tipo, esquema[i].tam, esquema[i].pk, esquema[i].fk, esquema[i].ref);   
+		if (esquema[i].pk){
+			//printf("%d\n",EsquemaAcumu);
+			//while (1);
+			fseek(data, EsquemaAcumu, SEEK_CUR);
+			fread(BUFFER, sizeof(char), esquema[i].tam, data);
+			
+			switch(esquema[i].tipo){
+				case 'S':
+					if (strcmp(BUFFER, dt)==0)
+						return -14;
+					break;
+				case 'I':
+					if (convertI(BUFFER) == convertI(dt))
+						return -14;
+					break;
+				case 'D':
+					if (convertD(BUFFER) == convertD(dt))
+						return -14;
+					break;
+				case 'C':
+					if (strncmp(BUFFER, dt, 1)==0)
+						return -14;
+					break;
+			}
+		}
+		EsquemaAcumu+=esquema[i].tam;
 	}
 	
-	
-	/*for (i=0;i < objeto.qtdCampos; i+=Tam){
-		
-	}*/
-	return NULL;
+	return 0;
 }
 
 void insert (Dado novo, sentinela_lista2_t *lista){

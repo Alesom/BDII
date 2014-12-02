@@ -22,7 +22,7 @@ typedef struct tp_table{ // Estrutura usada para carregar fs_schema.dat
 	int tam;						// Tamanho do Campo.
 	int pk;
 	int fk;
-	char ref[100];
+	char ref[ TAMANHO_NOME_TABELA];
 	struct tp_table *next;			// Encadeamento para o próximo campo.
 }tp_table;
 
@@ -59,6 +59,11 @@ union c_int{
 	int  num;
 	char cnum[sizeof(int)];
 };
+
+int convertI(char u[]);
+
+
+double convertD(char u[]) ;
 
 /*
 	Esta função tem por objetivo criar e inicializar uma estrutura do tipo tp_buffer
@@ -154,7 +159,7 @@ int finalizaTabela(table *t);
 	*nomeCampo - Nome do campo que o usuário vai inserir um valor.
 	*valorCampo - Valor do campo que vai ser inserido.
 */
-column *insereValor(column *c, char *nomeCampo, char *valorCampo);
+column *insereValor(column *c, char *nomeCampo, char *valorCampo, int pk, int fk, char nomeDaTabela[]);
 /*
 	Esta função finaliza a inserção de valores em uma tabela. Assume que o usuário entrou com todos os campos de uma tupla completa.
 	Retorna: 

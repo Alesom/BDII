@@ -73,9 +73,11 @@ tp_table *leSchema (struct fs_objects objeto){
 				fread(esquema[i].ref, sizeof (char), TAMANHO_NOME_TABELA, schema);
 				i++; 
 			}
-			else
-				fseek(schema, 45, 1); // Pula a quantidade de caracteres para a proxima verificacao ( do nome, 1B do tipo e 4B do tamanho). 
+			else{
+				int seila=sizeof(tp_table)+sizeof(esquema->next);
+				fseek(schema, seila, 1); // Pula a quantidade de caracteres para a proxima verificacao ( do nome, 1B do tipo e 4B do tamanho). 
 					/*foi alterado para os novos valores 100 do nome da tabela referênciada e 8 de dois inteiros.*/
+			}
 		}
 	}
 	return esquema;
@@ -484,8 +486,6 @@ int finalizaTabela(table *t)
 // INSERE NA TABELA
 column *insereValor(column *c, char *nomeCampo, char *valorCampo, int pk, int fk, char nomeDaTabela[])
 {
-	if (ValidaCampos(nomeDaTabela)==ERRO_INSERIR_VALOR)
-		return ERRO_INSERIR_VALOR;
 	/*
 
 	Aqui vai ter uma função para validar as chaves, ou da pra validar nessa função mesmo?
@@ -525,32 +525,46 @@ column *insereValor(column *c, char *nomeCampo, char *valorCampo, int pk, int fk
 }
 int finalizaInsert(char *nome, column *c)
 {
-	column *auxC;
+	column *auxC, *j;
 	int i = 0, x = 0, t;
 	FILE *dados;
-
 
 	struct fs_objects dicio = leObjeto(nome); // Le dicionario
 	tp_table *auxT = leSchema(dicio); // Le esquema
 	
 	if((dados = fopen(dicio.nArquivo,"a+b")) == NULL)
-    	return ERRO_ABRIR_ARQUIVO;
+		return ERRO_ABRIR_ARQUIVO;
 	
 	for(auxC = c, t = 0; auxC != NULL; auxC = auxC->next, t++)
 	{
 		if(t >= dicio.qtdCampos)
 			t = 0;
-
+		
+		for (j=c; auxC != j; j=j->next){ //verifica se existe um elemento que tem uma chave primaria igual a outro arquivo existente na lista
+			if (strncmp(j->valorCampo, auxC->valorCampo, auxT[t].tam)==0)
+				return ERRO_CAMPO_JA_EXISTENTE;
+		}
+		
+		if (fopen(nome, "r") != NULL){ //se existe um arquivo, ferifica no arquivo; 
+			if (ValidaCampos(nome, auxC->valorCampo)==ERRO_CAMPO_JA_EXISTENTE){
+				printf("conflito\n");
+				return ERRO_CAMPO_JA_EXISTENTE;	
+			}
+		}
+		
+		
 		if(auxT[t].tipo == 'S'){ // Grava um dado do tipo string.
 			if(sizeof(auxC->valorCampo) > auxT[t].tam){
 				return ERRO_NO_TAMANHO_STRING;
 			}
 			if(strcmp(auxC->nomeCampo, auxT[t].nome) != 0){
+				printf("%s %s\n\n", auxC->nomeCampo, auxT[t].nome);
 				return ERRO_NOME_CAMPO;
 			}
 			char valorCampo[auxT[t].tam];
 			strcpy(valorCampo, auxC->valorCampo);
 			strcat(valorCampo, "\0");
+				
 			fwrite(&valorCampo,sizeof(valorCampo),1,dados);
 		}
 		else if(auxT[t].tipo == 'I'){ // Grava um dado do tipo inteiro.
