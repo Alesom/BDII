@@ -477,7 +477,7 @@ int finalizaTabela(table *t)
 	}
 	
 	if (flag)
-		return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_VALIDA;
+		return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA;
 
 	fclose(esquema);
 
@@ -568,7 +568,7 @@ int finalizaInsert(char *nome, column *c)
 			FILE *aux1=fopen(NomeAuxiliar, "r");
 			if (aux1 != NULL){ //se existe um arquivo, verifica no arquivo; 
 				fclose (aux1);
-				k=ValidaCampos(nome, auxC->valorCampo);
+				k=ValidaCampos(nome, auxC->valorCampo, 1);
 				//printf("%d\n", k);
 				if (k==ERRO_CAMPO_JA_EXISTENTE){
 					//printf("conflito\n");
@@ -576,13 +576,12 @@ int finalizaInsert(char *nome, column *c)
 				}
 			}
 		}else if (auxT[t].fk==1){
-			k=ValidaCampos(nome, auxC->valorCampo);
-			if (k==ERRO_CAMPO_NAO_EXISTE){
-				return ERRO_CAMPO_NAO_EXISTE;
+			k=ValidaCampos(auxT[t].ref, auxC->valorCampo, 0);
+		//	printf("%d\n\n\n", k);
+			if (k==ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA){		
+				return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA;
 			}
 		}
-		
-		printf("Char a ser impresso: %c\n\n", auxT[t].tipo);
 		
 		if(auxT[t].tipo == 'S'){ // Grava um dado do tipo string.
 			//printf("%d %d\n\n\n",sizeof(auxC->valorCampo), auxT[t].tam);

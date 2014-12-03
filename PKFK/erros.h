@@ -16,7 +16,7 @@
 #define ERRO_CAMPO_JA_EXISTENTE -14 //adicionado
 #define ERRO_NAO_HA_ESPACO -15 //adicionado
 #define ERRO_O_VALOR_NAO_PODE_SER_INSERIDO -16 //adicionado
-#define ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_VALIDA -17 //adicionado
+#define ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA -17 //adicionado
 #define ERRO_CAMPO_NAO_EXISTE -18 //adicionado
 #define ERRO_DE_ALOCACAO NULL
 #define ERRO_ABRIR_ESQUEMA NULL

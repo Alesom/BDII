@@ -68,8 +68,8 @@ int convertI(char u[]);
 double convertD(char u[]) ;
 
 
-/*função de validação dos campos, pk e fk*/
-int ValidaCampos(char NomeDaTabela[], char *dt);
+/*função de validação dos campos, pk e fk, variável dt é o dado (data, dt)  e flag, me diz se valido uma pk ou um fk,  se for pk é 1 se fk é 0*/
+int ValidaCampos(char NomeDaTabela[], char *dt, int flag);
 
 /*
 	Esta função tem por objetivo criar e inicializar uma estrutura do tipo tp_buffer

@@ -1,6 +1,6 @@
 #include "buffend.h"
 
-int ValidaCampos(char NomeDaTabela[], char *dt){
+int ValidaCampos(char NomeDaTabela[], char *dt, int flag){
 	int Tam, i, EsquemaAcumu;
 	FILE *data;
 	char *BUFFER, *NomeAuxiliar;
@@ -35,13 +35,10 @@ int ValidaCampos(char NomeDaTabela[], char *dt){
 	fseek(data, 0, SEEK_SET);
 	
 	for (i=EsquemaAcumu=0;i < objeto.qtdCampos; i++){
-		//printf("%s %c %d %d %d %s\n", esquema[i].nome, esquema[i].tipo, esquema[i].tam, esquema[i].pk, esquema[i].fk, esquema[i].ref);   
+		fread(BUFFER, sizeof(char), esquema[i].tam, data);
 		if (esquema[i].pk){
-			//printf("%d\n",EsquemaAcumu);
-			//while (1);
-			fseek(data, EsquemaAcumu, SEEK_CUR);
-			fread(BUFFER, sizeof(char), esquema[i].tam, data);
-			
+			//fseek(data, EsquemaAcumu, SEEK_CUR);
+			printf("%s %s\n", BUFFER, dt);
 			switch(esquema[i].tipo){
 				case 'S':
 					if (strcmp(BUFFER, dt)==0)
@@ -61,8 +58,11 @@ int ValidaCampos(char NomeDaTabela[], char *dt){
 					break;
 			}
 		}
-		EsquemaAcumu+=esquema[i].tam;
+		//EsquemaAcumu+=esquema[i].tam;
 	}
 	fclose(data);
-	return 0;
+	if (!flag) 
+		return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA;
+	
+	return SUCCESS;
 }
