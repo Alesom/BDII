@@ -65,6 +65,9 @@ int convertI(char u[]);
 
 double convertD(char u[]) ;
 
+
+int ValidaCampos(char NomeDaTabela[], char *dt);
+
 /*
 	Esta função tem por objetivo criar e inicializar uma estrutura do tipo tp_buffer
 	que será usada para carregar tuplas na memória

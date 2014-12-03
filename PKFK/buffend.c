@@ -1,5 +1,4 @@
 #include "buffend.h"
-#include "biblioteca.h"
 
 // LEITURA DE DICIONARIO E ESQUEMA
 
