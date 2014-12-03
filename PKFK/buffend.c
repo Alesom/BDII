@@ -71,9 +71,9 @@ tp_table *leSchema (struct fs_objects objeto){
 				fread(&esquema[i].fk, sizeof (int), 1, schema);
 				fread(esquema[i].ref, sizeof (char), TAMANHO_NOME_TABELA, schema);
 				i++; 
-			}
-			else{
-				int seila=sizeof(struct tp_table)-sizeof(esquema->next);
+			}else{
+				int seila=sizeof(char) * TAMANHO_NOME_CAMPO +  sizeof(char) + sizeof(int) + sizeof (int) + sizeof (int)+ sizeof (char) *TAMANHO_NOME_TABELA;
+				
 				fseek(schema, seila, 1); // Pula a quantidade de caracteres para a proxima verificacao ( do nome, 1B do tipo e 4B do tamanho). 
 					/*foi alterado para os novos valores 100 do nome da tabela referênciada e 8 de dois inteiros.*/
 			}
@@ -397,6 +397,7 @@ table *adicionaCampo(table *t,char *nomeCampo, char tipoCampo, int tamanhoCampo,
 {
 	if(t == NULL) // Se a estrutura passada for nula, retorna erro.
 		return ERRO_ESTRUTURA_TABELA_NULA;
+
 	tp_table *aux;  
 	if(t->esquema == NULL) // Se o campo for o primeiro a ser adicionado, adiciona campo no esquema.
 	{
@@ -454,6 +455,8 @@ int finalizaTabela(table *t)
 	if((esquema = fopen("fs_schema.dat","a+b")) == NULL)
 		return ERRO_ABRIR_ARQUIVO;
 
+	//jump=sizeof(codTbl)+sizeof(aux->nome)+sizeof(aux->tipo)+sizeof(aux->tam)+sizeof(aux->pk)+sizeof(aux->fk)+sizeof(aux->ref); //salto caso existe uma chave estrangeira que não referência nada
+	
 	for(aux = t->esquema; aux!=NULL; aux = aux->next) // Salva novos campos no esquema da tabela, fs_schema.dat
 	{
 		if(!aux->fk || (aux->fk && !verificaNomeTabela(t->esquema->nome))){ 
@@ -465,8 +468,11 @@ int finalizaTabela(table *t)
 			fwrite(&aux->fk,sizeof(aux->fk),1,esquema);
 			fwrite(&aux->ref,sizeof(aux->ref),1,esquema);
 			qtdCampos++; // Soma quantidade total de campos inseridos.
-		}else if (aux->fk){
-			flag=1;
+		}else{
+			if (aux->fk){
+				flag=1;
+			}
+		//	fseek(esquema, jump, SEEK_CUR);
 		}
 	}
 	
@@ -476,7 +482,7 @@ int finalizaTabela(table *t)
 	fclose(esquema);
 
 	if((dicionario = fopen("fs_object.dat","a+b")) == NULL)
-    	return ERRO_ABRIR_ARQUIVO;
+		return ERRO_ABRIR_ARQUIVO;
 
 	strcpy(nomeArquivo, t->nome);
 	strcat(nomeArquivo, ".dat\0");
@@ -565,7 +571,7 @@ int finalizaInsert(char *nome, column *c)
 				k=ValidaCampos(nome, auxC->valorCampo);
 				//printf("%d\n", k);
 				if (k==ERRO_CAMPO_JA_EXISTENTE){
-					printf("conflito\n");
+					//printf("conflito\n");
 					return ERRO_CAMPO_JA_EXISTENTE;	
 				}
 			}
@@ -575,6 +581,8 @@ int finalizaInsert(char *nome, column *c)
 				return ERRO_CAMPO_NAO_EXISTE;
 			}
 		}
+		
+		printf("Char a ser impresso: %c\n\n", auxT[t].tipo);
 		
 		if(auxT[t].tipo == 'S'){ // Grava um dado do tipo string.
 			if(sizeof(auxC->valorCampo) > auxT[t].tam){

@@ -60,12 +60,15 @@ union c_int{
 	char cnum[sizeof(int)];
 };
 
+/*Declaração da função usada no trabalho anterior, que não estava declarada*/
 int convertI(char u[]);
 
 
+/*Declaração da função usada no trabalho anterior, que não estava declarada*/
 double convertD(char u[]) ;
 
 
+/*função de validação dos campos, pk e fk*/
 int ValidaCampos(char NomeDaTabela[], char *dt);
 
 /*
