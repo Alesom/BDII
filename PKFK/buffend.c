@@ -585,7 +585,8 @@ int finalizaInsert(char *nome, column *c)
 		printf("Char a ser impresso: %c\n\n", auxT[t].tipo);
 		
 		if(auxT[t].tipo == 'S'){ // Grava um dado do tipo string.
-			if(sizeof(auxC->valorCampo) > auxT[t].tam){
+			//printf("%d %d\n\n\n",sizeof(auxC->valorCampo), auxT[t].tam);
+			if(strlen(auxC->valorCampo) > auxT[t].tam){   //A LINHA ESTAVA sizeof(auxC->valorCampo) > auxT[t].tam, sizeof(auxC->valorCampo) retorna o tamanho do ponteiro;
 				return ERRO_NO_TAMANHO_STRING;
 			}
 			if(strcmp(auxC->nomeCampo, auxT[t].nome) != 0){

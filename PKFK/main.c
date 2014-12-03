@@ -115,6 +115,7 @@ int inserirPrivi(){
 		printf("Tupla Inserida\n");
 	else
 		printf("Erro ao inserir Tupla : %d\n",erro);
+
 	c=NULL;
 	printf("\nInserindo na tabela Privilegios / ID: 22, Descr: tudo\n");
 	c = insereValor(c, "ID", "22");
@@ -144,11 +145,13 @@ int inserirCliPri(){
 		printf("Erro ao inserir Tupla : %d\n",erro);
 	
 	c=NULL;
+	
 	printf("\nInserindo na tabela CliPri / CCPF: 323, PID: 22\n");
 	c = insereValor(c, "CCPF", "323");
 	c = insereValor(c, "PID", "22");
 
 	erro = finalizaInsert("CliPri", c);
+	
 	if(erro == SUCCESS)
 		printf("Tupla Inserida\n");
 	else
@@ -159,7 +162,7 @@ int inserirCliPri(){
 int main(){
 	
 	criatabelas();
-	int i;
+	/*int i;
 	struct fs_objects objeto = leObjeto("CliPri");
 	tp_table *esquema = leSchema(objeto);
 	
@@ -172,7 +175,7 @@ int main(){
 		return ERRO_O_VALOR_NAO_PODE_SER_INSERIDO;
 	
 	
-	
+	*/
 	
 	inserirCliente();
 	inserirPrivi();
