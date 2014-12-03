@@ -40,6 +40,7 @@ adicionaCampo(t, "CCPF", 'S', 10, 0, 1, "Cliente");
 Acrescentamos teste para validação de tabela com chve estrangeira na funçao finalizaTabela;
 
 Das Criações:
+
 Foi criada a funçao validaCampos():
 int ValidaCampos(char NomeDaTabela[], char *dt);
 Que está sendo chamada dentro da funçao finalizaInsert()
