@@ -182,7 +182,7 @@ int main(){
 	inserirCliPri();
 	
 	printf("\n");
-	printf("Pressione uma tecla para Sair\n");
+	printf("Pressione enter para Sair\n");
 	getchar();
 	system("rm -f *.dat");
 	return 0;
