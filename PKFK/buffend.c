@@ -545,8 +545,8 @@ int finalizaInsert(char *nome, column *c)
 	if((dados = fopen(dicio.nArquivo,"a+b")) == NULL)
 		return ERRO_ABRIR_ARQUIVO;
 	
-	for(auxC = c, t = 0; auxC != NULL; auxC = auxC->next, t++)
-	{
+	
+	for(auxC = c, t = 0; auxC != NULL; auxC = auxC->next, t++){ //valida os campos antes de inserção 
 		if(t >= dicio.qtdCampos)
 			t = 0;
 			
@@ -564,24 +564,39 @@ int finalizaInsert(char *nome, column *c)
 			strcat(NomeAuxiliar, ".dat");
 			
 		//	printf("%s\n", NomeAuxiliar);
-			
+
 			FILE *aux1=fopen(NomeAuxiliar, "r");
 			if (aux1 != NULL){ //se existe um arquivo, verifica no arquivo; 
-				fclose (aux1);
-				k=ValidaCampos(nome, auxC->valorCampo, 1);
-				//printf("%d\n", k);
-				if (k==ERRO_CAMPO_JA_EXISTENTE){
-					//printf("conflito\n");
-					return ERRO_CAMPO_JA_EXISTENTE;	
+				fseek(aux1, 0, SEEK_END);
+				if (ftell(aux1) > 1){
+					fclose (aux1);
+					k=ValidaCampos(nome, auxC->valorCampo, 1);
+					//printf("%d\n", k);
+					if (k==ERRO_CAMPO_JA_EXISTENTE){
+						//printf("conflito\n");
+						return ERRO_CAMPO_JA_EXISTENTE;	
+					}
+				}else{
+					fclose(aux1);
 				}
 			}
 		}else if (auxT[t].fk==1){
 			k=ValidaCampos(auxT[t].ref, auxC->valorCampo, 0);
-		//	printf("%d\n\n\n", k);
+			if (k==ERRO_CAMPO_JA_EXISTENTE) //PESQUISOU, VIU QUE JÁ EXISTIA CHAVE PRIMARIA ENTÃO RETORNA SUCESSO
+				continue;
+			printf("K->%d auxT[t]-> %s, auxC -> %s\n", k, auxT[t].ref, auxC->valorCampo);
 			if (k==ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA){		
 				return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA;
 			}
 		}
+	}
+	//se os campos estão válidos, ele grava nos arquivos
+	
+	
+	for(auxC = c, t = 0; auxC != NULL; auxC = auxC->next, t++)
+	{
+		if(t >= dicio.qtdCampos)
+			t = 0;
 		
 		if(auxT[t].tipo == 'S'){ // Grava um dado do tipo string.
 			//printf("%d %d\n\n\n",sizeof(auxC->valorCampo), auxT[t].tam);

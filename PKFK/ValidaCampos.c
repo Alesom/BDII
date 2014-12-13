@@ -34,32 +34,34 @@ int ValidaCampos(char NomeDaTabela[], char *dt, int flag){
 
 	fseek(data, 0, SEEK_SET);
 	
-	for (i=EsquemaAcumu=0;i < objeto.qtdCampos; i++){
-		fread(BUFFER, sizeof(char), esquema[i].tam, data);
-		if (esquema[i].pk){
-			//fseek(data, EsquemaAcumu, SEEK_CUR);
-			printf("%s %s\n", BUFFER, dt);
-			switch(esquema[i].tipo){
-				case 'S':
-					if (strcmp(BUFFER, dt)==0)
-						return -14;
-					break;
-				case 'I':
-					if (convertI(BUFFER) == convertI(dt))
-						return -14;
-					break;
-				case 'D':
-					if (convertD(BUFFER) == convertD(dt))
-						return -14;
-					break;
-				case 'C':
-					if (strncmp(BUFFER, dt, 1)==0)
-						return -14;
-					break;
+	while (!feof(data)){
+		for (i=EsquemaAcumu=0;i < objeto.qtdCampos; i++){
+			fread(BUFFER, sizeof(char), esquema[i].tam, data);
+			printf("Tam esq->%d %c\n%s\n", esquema[i].tam, esquema[i].tipo, BUFFER);	
+			if (esquema[i].pk){
+				//printf("%s %s\n", BUFFER, dt);
+				switch(esquema[i].tipo){
+					case 'S':
+						if (strcmp(BUFFER, dt)==0)
+							return -14;
+						break;
+					case 'I':
+						if (convertI(BUFFER) == convertI(dt))
+							return -14;
+						break;
+					case 'D':
+						if (convertD(BUFFER) == convertD(dt))
+							return -14;
+						break;
+					case 'C':
+						if (strncmp(BUFFER, dt, 1)==0)
+							return -14;
+						break;
+				}
 			}
 		}
-		//EsquemaAcumu+=esquema[i].tam;
 	}
+	
 	fclose(data);
 	if (!flag) 
 		return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA;

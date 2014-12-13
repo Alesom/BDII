@@ -79,6 +79,7 @@ int inserirCliente(){
 	c = insereValor(c, "Sexo", "M");
 
 	erro = finalizaInsert("Cliente", c);
+	
 	if(erro == SUCCESS)
 		printf("Tupla Inserida\n");
 	else
@@ -99,6 +100,36 @@ int inserirCliente(){
 	else
 		printf("Erro ao inserir Tupla : %d\n",erro);
 
+	c=NULL;
+
+	printf("\nInserindo na tabela Cliente / CPF: 165, Nome: Outra, Idade: 40, Sexo:F\n");
+	c = insereValor(c, "CPF", "165");
+	c = insereValor(c, "Nome", "Outra");
+	c = insereValor(c, "Idade", "40");
+	c = insereValor(c, "Sexo", "F");
+
+	erro = finalizaInsert("Cliente", c);
+	
+	if(erro == SUCCESS)
+		printf("Tupla Inserida\n");
+	else
+		printf("Erro ao inserir Tupla : %d\n",erro);
+
+	c=NULL;
+
+	printf("\nInserindo na tabela Cliente / CPF: 165, Nome: Outra, Idade: 40, Sexo:F\n");
+	c = insereValor(c, "CPF", "165");
+	c = insereValor(c, "Nome", "Outra");
+	c = insereValor(c, "Idade", "40");
+	c = insereValor(c, "Sexo", "F");
+
+	erro = finalizaInsert("Cliente", c);
+	
+	if(erro == SUCCESS)
+		printf("Tupla Inserida\n");
+	else
+		printf("Erro ao inserir Tupla : %d\n",erro);
+		
 	return 0;
 }
 
@@ -139,6 +170,7 @@ int inserirCliPri(){
 	c = insereValor(c, "PID", "22");
 
 	erro = finalizaInsert("CliPri", c);
+	
 	if(erro == SUCCESS)
 		printf("Tupla Inserida\n");
 	else
