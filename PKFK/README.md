@@ -8,19 +8,13 @@ Alunos: Alesom Zorzi, Elias Fank e João Gehlen
 
 Do Trabalho:
 
-Nesta atividade, cada equipe terá que implementar na biblioteca do SGBD a inclusão de chave primária (PK) e chave estrangeira (FK) na criação das tabelas. As FK devem ser criticadas caso a tabela/atributo de origem ainda não existam.
+- Ao criar uma tabela, ter a possibilidade de definir chaves primárias e estrangeiras.
 
-Deverá ser implementada também a inclusão de tuplas que deve garantir as restrições de PK e FK, caso existirem.
+- Fazer uma funcionalidade para abrir uma tabela para trabalhar (uma função que englobe leObjeto e leSchema)
 
-Documentar o código e atualizar as instruções do código original conforme às alterações feitas.
+- Fazer uma funcionalidade que exclua uma tabela (um drop table). A tabela deve ser excluída do disco e do dicionário.
 
-Cuidados:
-
-- utilizar as funções originais de criação das tabelas, acrescentando apenas a criação das chaves.
-
-- utilizar as funções originais de a inserção das tuplas, acrescentando apenas a verificação das chaves
-
-- atualizar o dicionário de dados.
+- Atualizar o txt com as instruções e comentar o código para facilitar as futuras manutenções.
 
 Das Alterações:
 Acrescentamos três parâmetros na funçao adicionaCampo()
@@ -42,9 +36,22 @@ Acrescentamos teste para validação de tabela com chve estrangeira na funçao f
 Das Criações:
 
 Foi criada a funçao validaCampos():
-int ValidaCampos(char NomeDaTabela[], char *dt);
+int ValidaCampos(char NomeDaTabela[], char *dt, int flag);
 Que está sendo chamada dentro da funçao finalizaInsert()
 Para validar os dados de entrada das tuplas.
+
+Foi criada a função AbrirTabela();
+tp_Object_Schema AbrirTabela(char * nomeTabela);
+Pode ser chamada para criar uma estrutura que armazena os dados:
+-nome da tabela
+-cod da tabela
+-nome do arquivo da tabela
+-quantidade de campos da tabela
+-lista com dados dos campos da tabela:
+	-nome do campo
+	-tipo do campo
+	-tamanho do campo
+	-informaçoes sobre PK e FK	
 
 Da Compilação:
 gcc *.c -o main -Wall
