@@ -36,21 +36,35 @@ Acrescentamos teste para validação de tabela com chve estrangeira na funçao f
 Das Criações:
 
 Foi criada a funçao validaCampos():
+
 int ValidaCampos(char NomeDaTabela[], char *dt, int flag);
+
 Que está sendo chamada dentro da funçao finalizaInsert()
+
 Para validar os dados de entrada das tuplas.
 
 Foi criada a função AbrirTabela();
+
 tp_Object_Schema AbrirTabela(char * nomeTabela);
+
 Pode ser chamada para criar uma estrutura que armazena os dados:
+
 -nome da tabela
+
 -cod da tabela
+
 -nome do arquivo da tabela
+
 -quantidade de campos da tabela
+
 -lista com dados dos campos da tabela:
+
 	-nome do campo
+
 	-tipo do campo
+
 	-tamanho do campo
+
 	-informaçoes sobre PK e FK	
 
 Da Compilação:
