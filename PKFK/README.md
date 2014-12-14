@@ -16,8 +16,8 @@ Do Trabalho:
 
 - Atualizar o txt com as instruções e comentar o código para facilitar as futuras manutenções.
 
-Das Alterações:
-Acrescentamos três parâmetros na funçao adicionaCampo()
+DAS ALTERAÇÕES:
+-Acrescentamos três parâmetros na funçao adicionaCampo()
 
 Que agora ficou assim:
 
@@ -31,11 +31,11 @@ Exemplo de chamada para chave estrangeira:
 
 adicionaCampo(t, "CCPF", 'S', 10, 0, 1, "Cliente");
 
-Acrescentamos teste para validação de tabela com chve estrangeira na funçao finalizaTabela;
+-Acrescentamos teste para validação de tabela com chve estrangeira na funçao finalizaTabela;
 
-Das Criações:
+DAS CRIAÇÕES:
 
-Foi criada a funçao validaCampos():
+-Foi criada a funçao validaCampos():
 
 int ValidaCampos(char NomeDaTabela[], char *dt, int flag);
 
@@ -43,7 +43,7 @@ Que está sendo chamada dentro da funçao finalizaInsert()
 
 Para validar os dados de entrada das tuplas.
 
-Foi criada a função AbrirTabela();
+-Foi criada a função AbrirTabela();
 
 tp_Object_Schema AbrirTabela(char * nomeTabela);
 
