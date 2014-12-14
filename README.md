@@ -6,5 +6,3 @@ Professor: Dênio Duarte
 
 Alunos: Alesom Zorzi, Elias Fank e João Gehlen
 
-
-Cada pasta contém uma etapa do projeto do semestre.
