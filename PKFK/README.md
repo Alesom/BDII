@@ -6,7 +6,7 @@ Professor: Dênio Duarte
 
 Alunos: Alesom Zorzi, Elias Fank e João Gehlen
 
-Do Trabalho:
+DO TRABALHO:
 
 - Ao criar uma tabela, ter a possibilidade de definir chaves primárias e estrangeiras.
 
