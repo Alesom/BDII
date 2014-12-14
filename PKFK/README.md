@@ -17,6 +17,7 @@ Do Trabalho:
 - Atualizar o txt com as instruções e comentar o código para facilitar as futuras manutenções.
 
 DAS ALTERAÇÕES:
+
 -Acrescentamos três parâmetros na funçao adicionaCampo()
 
 Que agora ficou assim:
@@ -67,7 +68,8 @@ Pode ser chamada para criar uma estrutura que armazena os dados:
 
 	-informaçoes sobre PK e FK	
 
-Da Compilação:
+DA COMPILAÇÃO:
+
 gcc *.c -o main -Wall
 
 Para testar as funções de validação foi criada a main
