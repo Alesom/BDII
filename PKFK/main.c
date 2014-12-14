@@ -190,7 +190,30 @@ int inserirCliPri(){
 		printf("Erro ao inserir Tupla : %d\n",erro);
 	return 0;
 }
-
+int testeAbrirTabela(){
+	
+	printf("\nTESTE DA FUNCAO ABRIR TABELA\n");
+	tp_Object_Schema Object_Schema = AbrirTabela("CliPri");
+	
+	printf("Nome da Tabela: %s\n",Object_Schema.nome);
+	printf("Cod da Tabela: %d\n",Object_Schema.cod);
+	printf("Nome do Arquivo da Tabela: %s\n",Object_Schema.nArquivo);
+	printf("Quantidade de Campos da Tabela: %d\n",Object_Schema.qtdCampos);
+	
+	int x=0;
+	while (x < Object_Schema.qtdCampos){
+		
+		printf("\nNome do Campo: %s\n",Object_Schema.Campos[x].nome);
+		printf("Tipo do Campo: %c\n",Object_Schema.Campos[x].tipo);
+		printf("Tamanho do Campo: %d\n",Object_Schema.Campos[x].tam);
+		printf("PK Campo: %d\n",Object_Schema.Campos[x].pk);
+		printf("FK Campo: %d\n",Object_Schema.Campos[x].fk);
+		printf("FK do Campo: %s\n",Object_Schema.Campos[x].ref);
+		
+		x++;
+	}
+	return 0;
+}
 int main(){
 	
 	criatabelas();
@@ -208,10 +231,13 @@ int main(){
 	
 	
 	*/
+	printf("\nTESTANDO INSERCOES");
 	
 	inserirCliente();
 	inserirPrivi();
 	inserirCliPri();
+	
+	testeAbrirTabela();
 	
 	printf("\n");
 	printf("Pressione enter para Sair\n");

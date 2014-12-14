@@ -72,9 +72,9 @@ tp_table *leSchema (struct fs_objects objeto){
 				fread(esquema[i].ref, sizeof (char), TAMANHO_NOME_TABELA, schema);
 				i++; 
 			}else{
-				int seila=sizeof(char) * TAMANHO_NOME_CAMPO +  sizeof(char) + sizeof(int) + sizeof (int) + sizeof (int)+ sizeof (char) *TAMANHO_NOME_TABELA;
+				int tamanho=sizeof(char) * TAMANHO_NOME_CAMPO +  sizeof(char) + sizeof(int) + sizeof (int) + sizeof (int)+ sizeof (char) *TAMANHO_NOME_TABELA;
 				
-				fseek(schema, seila, 1); // Pula a quantidade de caracteres para a proxima verificacao ( do nome, 1B do tipo e 4B do tamanho). 
+				fseek(schema, tamanho, 1); // Pula a quantidade de caracteres para a proxima verificacao ( do nome, 1B do tipo e 4B do tamanho). 
 					/*foi alterado para os novos valores 100 do nome da tabela referênciada e 8 de dois inteiros.*/
 			}
 		}
@@ -584,7 +584,7 @@ int finalizaInsert(char *nome, column *c)
 			k=ValidaCampos(auxT[t].ref, auxC->valorCampo, 0);
 			if (k==ERRO_CAMPO_JA_EXISTENTE) //PESQUISOU, VIU QUE JÁ EXISTIA CHAVE PRIMARIA ENTÃO RETORNA SUCESSO
 				continue;
-			printf("K->%d auxT[t]-> %s, auxC -> %s\n", k, auxT[t].ref, auxC->valorCampo);
+			//printf("K->%d auxT[t]-> %s, auxC -> %s\n", k, auxT[t].ref, auxC->valorCampo);
 			if (k==ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA){		
 				return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA;
 			}
@@ -729,3 +729,17 @@ column * getPage(tp_buffer *buffer, tp_table *campos, struct fs_objects objeto, 
 	return colunas; //Retorna a 'page' do buffer
 }
 //----------------------------------------
+
+tp_Object_Schema AbrirTabela(char * nomeTabela){
+	
+	tp_Object_Schema Object_Schema;
+	struct fs_objects objeto = leObjeto(nomeTabela);
+	
+	strcpy(Object_Schema.nome, objeto.nome);
+	Object_Schema.cod = objeto.cod;
+	strcpy(Object_Schema.nArquivo, objeto.nArquivo);
+	Object_Schema.qtdCampos = objeto.qtdCampos;
+	Object_Schema.Campos = leSchema(objeto);
+
+	return Object_Schema;
+}

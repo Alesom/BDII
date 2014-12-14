@@ -48,6 +48,14 @@ typedef struct tp_buffer{ // Estrutura utilizada para armazenar o buffer.
 
 // Union's utilizados na conversão de variáveis do tipo inteiro e double.
 
+typedef struct tp_Object_Schema{
+	char nome[TAMANHO_NOME_TABELA];		//  Nome da tabela.
+	int cod;							// Código da tabela.
+	char nArquivo[TAMANHO_NOME_ARQUIVO];// Nome do arquivo onde estão armazenados os dados da tabela.
+	int qtdCampos;						// Quantidade de campos da tabela.
+	tp_table *Campos;			        // Lista de campos.
+}tp_Object_Schema;
+
 union c_double{
 	
 	double dnum;
@@ -199,3 +207,6 @@ column * getPage(tp_buffer *buffer, tp_table *campos, struct fs_objects objeto, 
 	*nTupla - Número da tupla a ser excluida, este número é relativo a página do buffer e não a todos os registros carregados
 */
 column * excluirTuplaBuffer(tp_buffer *buffer, tp_table *campos, struct fs_objects objeto, int page, int nTupla);
+
+
+tp_Object_Schema AbrirTabela(char * nomeTabela);
