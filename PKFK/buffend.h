@@ -207,6 +207,8 @@ column * getPage(tp_buffer *buffer, tp_table *campos, struct fs_objects objeto, 
 	*nTupla - Número da tupla a ser excluida, este número é relativo a página do buffer e não a todos os registros carregados
 */
 column * excluirTuplaBuffer(tp_buffer *buffer, tp_table *campos, struct fs_objects objeto, int page, int nTupla);
-
-
+/*
+	Esta função retorna uma estrutura com dados necessarios para se trabalhar com uma tabela.
+	Retorna os dados da tabela e os dados de cada campo desta tabela.
+*/
 tp_Object_Schema AbrirTabela(char * nomeTabela);
