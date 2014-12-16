@@ -37,9 +37,7 @@ int ValidaCampos(char NomeDaTabela[], char *dt, int flag){
 	while (!feof(data)){
 		for (i=EsquemaAcumu=0;i < objeto.qtdCampos; i++){
 			fread(BUFFER, sizeof(char), esquema[i].tam, data);
-			//printf("Tam esq->%d %c\n%s\n", esquema[i].tam, esquema[i].tipo, BUFFER);	
 			if (esquema[i].pk){
-				//printf("%s %s\n", BUFFER, dt);
 				switch(esquema[i].tipo){
 					case 'S':
 						if (strcmp(BUFFER, dt)==0)

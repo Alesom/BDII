@@ -212,3 +212,27 @@ column * excluirTuplaBuffer(tp_buffer *buffer, tp_table *campos, struct fs_objec
 	Retorna os dados da tabela e os dados de cada campo desta tabela.
 */
 tp_Object_Schema AbrirTabela(char * nomeTabela);
+/*
+	Esta funçao remove o arquivo da tabela.
+	Tambem remove a tabela do dicionario de dados.
+*/
+int dropTable(char * nomeTabela);
+/*
+	Esta funçao verifica todas as tabelas
+	Se encontrar uma tabela com chave estrangeira da tabela passada por parametro retorna 1
+	Senao retorna 0
+*/
+int validaatualizacao(char *nTabela);
+/*
+	Esta funçao percorre o dicionario copiando o conteudo de todas as tabelas para um arquivo temporario
+	Nao copia o conteudo da tabela a ser excluida
+	No final o arquivo fs_object.dat é excluido e o temporario é renomeado para fs_object.dat
+*/
+int atualizaObjeto(char *nTabela);
+/*
+	Esta funçao percorre os esquemas das tabelas do banco
+	Copiando apenas os dados das tabelas que continuarao para um arquivo temporario
+	Ou seja, a tabela a ser excluida nao terá seus dados copiados
+	No final o arquivo fs_schema.dat é excluido e o temporario renomeado para fs_esquema.dat
+*/
+int atualizaSchema(int codigo);

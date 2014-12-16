@@ -732,6 +732,11 @@ column * getPage(tp_buffer *buffer, tp_table *campos, struct fs_objects objeto, 
 
 tp_Object_Schema AbrirTabela(char * nomeTabela){
 	
+	if(!verificaNomeTabela(nomeTabela)){
+		printf("Erro GRAVE! na função leObjeto(). Nome da tabela inválido.\nAbortando...\n");
+		exit(1);
+	}
+	
 	tp_Object_Schema Object_Schema;
 	struct fs_objects objeto = leObjeto(nomeTabela);
 	
@@ -742,4 +747,168 @@ tp_Object_Schema AbrirTabela(char * nomeTabela){
 	Object_Schema.Campos = leSchema(objeto);
 
 	return Object_Schema;
+}
+
+int atualizaObjeto(char *nTabela){
+	FILE *dicionario;
+	FILE *auxiliar;
+	int cod,qtdCampos,contador=1;
+	char nometabela[TAMANHO_NOME_TABELA];
+	char nomearquivotabela[TAMANHO_NOME_ARQUIVO];
+	
+	dicionario = fopen("fs_object.dat", "rwb+"); // Abre o dicionario de dados.
+
+	if(!verificaNomeTabela(nTabela)){
+		printf("Erro GRAVE! na função leObjeto(). Nome da tabela inválido.\nAbortando...\n");
+		exit(1);
+	}
+
+	if (dicionario == NULL)	{
+		printf("Erro GRAVE! na função leObjeto(). Arquivo não encontrado.\nAbortando...\n\n");
+		exit(1);
+	}
+	auxiliar = fopen("auxiliar.dat","a+b");
+	while(fgetc (dicionario) != EOF){
+		memset(nometabela, 0, sizeof (nometabela));
+		memset(nomearquivotabela, 0, sizeof (nomearquivotabela));
+		fseek(dicionario, -1, 1);
+		fread(&nometabela, sizeof(char), TAMANHO_NOME_TABELA , dicionario); //Lê somente o nome da tabela
+		fread(&cod,sizeof(int),1,dicionario);	// Copia valores referentes a tabela pesquisada para a estrutura.
+		fread(&nomearquivotabela,sizeof(char),TAMANHO_NOME_TABELA,dicionario);
+		fread(&qtdCampos,sizeof(int),1,dicionario);
+		if(strcmp(nometabela, nTabela) != 0){ // Verifica se o nome dado pelo usuario existe no dicionario de dados.
+			strcat(nometabela,"\0");
+			fwrite(&nometabela,sizeof(nometabela),1,auxiliar);
+			fwrite(&contador,sizeof(contador),1,auxiliar);
+			contador++;
+			strcat(nomearquivotabela,"\0");
+			fwrite(&nomearquivotabela,sizeof(nomearquivotabela),1,auxiliar);	
+			fwrite(&qtdCampos,sizeof(qtdCampos),1,auxiliar);			
+		}
+	}
+	fclose(auxiliar);
+	fclose(dicionario);
+	remove("fs_object.dat");
+	system("mv auxiliar.dat fs_object.dat");
+	
+	return 0;
+}
+int atualizaSchema(int codigo){
+	FILE *dicionario;
+	FILE *schema;
+	FILE *auxiliar;
+	int i, cod,contador=1;
+	char nometabela[TAMANHO_NOME_TABELA];
+	struct fs_objects objeto;
+	char tupla[TAMANHO_NOME_CAMPO];
+	dicionario = fopen("fs_object.dat", "rwb+"); // Abre o dicionario de dados.
+	
+	if (dicionario == NULL)	{
+		printf("Erro GRAVE! na função leObjeto(). Arquivo não encontrado.\nAbortando...\n\n");
+		exit(1);
+	}
+	auxiliar = fopen("auxiliar.dat", "a+b");
+	
+	if (auxiliar == NULL){
+		exit(1);
+	}
+	while(fgetc (dicionario) != EOF){
+		memset(nometabela, 0, sizeof (nometabela));
+		fseek(dicionario, -1, 1);
+		fread(&nometabela, sizeof(char), TAMANHO_NOME_TABELA , dicionario); //Lê somente o nome da tabela
+		fseek(dicionario,TAMANHO_NOME_ARQUIVO+sizeof(int)+sizeof(int),1);	
+		objeto = leObjeto(nometabela);
+		
+		tp_table *esquema = (tp_table *)malloc(sizeof(tp_table)*objeto.qtdCampos); // Aloca esquema com a quantidade de campos necessarios.
+
+		if(esquema == NULL)
+			return 1;
+
+		schema = fopen("fs_schema.dat", "a+b"); // Abre o arquivo de esquemas de tabelas.
+
+		if (schema == NULL)
+			return 1;
+		i = 0;
+		while((fgetc (schema) != EOF) && (i < objeto.qtdCampos)){ // Varre o arquivo ate encontrar todos os campos com o codigo da tabela.
+			fseek(schema, -1, 1);
+			if(fread(&cod, sizeof(int), 1, schema)){ // Le o codigo da tabela.
+				if(cod == objeto.cod){ // Verifica se o campo a ser copiado e da tabela que esta na estrutura fs_objects.
+					
+					fread(&tupla, sizeof(char), TAMANHO_NOME_CAMPO, schema);
+					strcpy(esquema[i].nome,tupla);					// Copia dados do campo para o esquema.
+					fread(&esquema[i].tipo, sizeof(char),1,schema);
+					fread(&esquema[i].tam, sizeof(int),1,schema);  
+					fread(&esquema[i].pk, sizeof (int), 1, schema);
+					fread(&esquema[i].fk, sizeof (int), 1, schema);
+					fread(esquema[i].ref, sizeof (char), TAMANHO_NOME_TABELA, schema);
+					
+					if(cod != codigo){
+						fwrite(&contador,sizeof(contador),1,auxiliar);
+						fwrite(&tupla,sizeof(tupla),1,auxiliar);
+						fwrite(&esquema[i].tipo,sizeof(esquema[i].tipo),1,auxiliar);
+						fwrite(&esquema[i].tam,sizeof(esquema[i].tam),1,auxiliar);
+						fwrite(&esquema[i].pk,sizeof(esquema[i].pk),1,auxiliar);
+						fwrite(&esquema[i].fk,sizeof(esquema[i].fk),1,auxiliar);
+						fwrite(esquema[i].ref,TAMANHO_NOME_TABELA,1,auxiliar);
+					}
+					i++; 
+				}
+			}
+		}
+		if(cod != codigo)
+			contador++;
+		
+		free(esquema);
+		fclose(schema);	
+
+	}
+	fclose(auxiliar);
+	fclose(dicionario);
+	remove("fs_schema.dat");
+	system("mv auxiliar.dat fs_schema.dat");
+	return 0;
+}
+
+int validaatualizacao(char *nTabela){
+	FILE *dicionario;
+	int x;
+	char nometabela[TAMANHO_NOME_TABELA];
+	tp_Object_Schema Object_Schema;
+	dicionario = fopen("fs_object.dat", "rwb+"); // Abre o dicionario de dados.
+	
+	if (dicionario == NULL)	{
+		printf("Erro GRAVE! na função leObjeto(). Arquivo não encontrado.\nAbortando...\n\n");
+		exit(1);
+	}
+	
+	while(fgetc (dicionario) != EOF){
+		memset(nometabela, 0, sizeof (nometabela));
+		fseek(dicionario, -1, 1);
+		fread(&nometabela, sizeof(char), TAMANHO_NOME_TABELA , dicionario); //Lê somente o nome da tabela
+		fseek(dicionario,TAMANHO_NOME_ARQUIVO+sizeof(int)+sizeof(int),1);	
+		Object_Schema = AbrirTabela(nometabela);
+		
+		x=0;
+		while (x < Object_Schema.qtdCampos){
+			
+			if(strcmp(nTabela, Object_Schema.Campos[x].ref)==0)
+			return 1;
+			x++;
+		}	
+
+	}
+	fclose(dicionario);
+	return SUCCESS;
+}
+int dropTable(char * nTabela){
+	int teste;
+	teste = validaatualizacao(nTabela); //verifica se na tabela a ser excluida nao tem ligação de chave estrangeira
+	
+	if (teste != SUCCESS)
+	return ERRO_TABELA_LIGADA;
+	
+	struct fs_objects objeto = leObjeto(nTabela);
+	atualizaSchema(objeto.cod);
+	atualizaObjeto(nTabela);
+	return SUCCESS;
 }

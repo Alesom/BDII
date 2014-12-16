@@ -214,30 +214,40 @@ int testeAbrirTabela(){
 	}
 	return 0;
 }
+int testeExcluir(){
+	int teste;
+	printf("\nExcluindo tabela Cliente\n");
+	teste = dropTable("Cliente");
+	if(teste != 0)
+	printf("erro ao excluir tabela %d\n",teste);
+	else
+	printf("tabela excluida com sucesso!\n");
+	
+	printf("\nExcluindo tabela CliPri\n");
+	teste = dropTable("CliPri");
+	if(teste != 0)
+	printf("erro ao excluir tabela %d\n",teste);
+	else
+	printf("tabela excluida com sucesso!\n");
+	
+	return 0;
+}
 int main(){
+	system("rm -f *.dat");// exclui todos arquivos .dat para nao ter problemas na execução
 	
-	criatabelas();
-	/*int i;
-	struct fs_objects objeto = leObjeto("CliPri");
-	tp_table *esquema = leSchema(objeto);
-	
-	for (i=0;i<objeto.qtdCampos;i++){
-		printf("%s\n", esquema[i].nome);
-		printf("%c\n", esquema[i].tipo);
-	}
-	
-	if (esquema==ERRO_ABRIR_ESQUEMA)
-		return ERRO_O_VALOR_NAO_PODE_SER_INSERIDO;
-	
-	
-	*/
+	criatabelas();// cria as tabelas para devidos testes
+
 	printf("\nTESTANDO INSERCOES");
 	
-	inserirCliente();
-	inserirPrivi();
-	inserirCliPri();
+	inserirCliente(); //  insere dados
+	inserirPrivi();   //  nas tabelas
+	inserirCliPri();  //  criadas
 	
-	testeAbrirTabela();
+	testeAbrirTabela(); // testa a funçao criada que retorna as tabelas com seus campos e dados
+	
+	printf("\nTESTE EXCLUIR TABELA");
+	
+	testeExcluir(); // tenta excluir uma tabela com chave e uma sem chave
 	
 	printf("\n");
 	printf("Pressione enter para Sair\n");
