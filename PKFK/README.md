@@ -67,6 +67,24 @@ Pode ser chamada para criar uma estrutura que armazena os dados:
 	-tamanho do campo
 
 	-informaçoes sobre PK e FK	
+	
+-Foi criada a funçao dropTable()
+
+int dropTable(char * nomeTabela);
+
+Para chamar somente passar o nome da tabela que o usuário deseja excluir
+
+Caso a tabela for excluida retorna SUCCESS, ao contrario provavelmente a tabela deve ser "pai" de outra
+
+Entao primeiro deve-se excluir a tabela "filho"
+
+para auxiliar na funçao dropTable foram criadas mais 3 funçoes:
+
+int validaatualizacao(char *nTabela);//verifica se é possivel excluir
+
+int atualizaObjeto(char *nTabela);// exclui a tabela do dicionário
+
+int atualizaSchema(int codigo);// exclui a tabela do esquema
 
 DA COMPILAÇÃO:
 
