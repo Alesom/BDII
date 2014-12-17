@@ -563,8 +563,6 @@ int finalizaInsert(char *nome, column *c)
 			strcpy(NomeAuxiliar, nome);
 			strcat(NomeAuxiliar, ".dat");
 			
-		//	printf("%s\n", NomeAuxiliar);
-
 			FILE *aux1=fopen(NomeAuxiliar, "r");
 			if (aux1 != NULL){ //se existe um arquivo, verifica no arquivo; 
 				fseek(aux1, 0, SEEK_END);
@@ -584,7 +582,6 @@ int finalizaInsert(char *nome, column *c)
 			k=ValidaCampos(auxT[t].ref, auxC->valorCampo, 0);
 			if (k==ERRO_CAMPO_JA_EXISTENTE) //PESQUISOU, VIU QUE JÁ EXISTIA CHAVE PRIMARIA ENTÃO RETORNA SUCESSO
 				continue;
-			//printf("K->%d auxT[t]-> %s, auxC -> %s\n", k, auxT[t].ref, auxC->valorCampo);
 			if (k==ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA){		
 				return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA;
 			}
@@ -599,7 +596,6 @@ int finalizaInsert(char *nome, column *c)
 			t = 0;
 		
 		if(auxT[t].tipo == 'S'){ // Grava um dado do tipo string.
-			//printf("%d %d\n\n\n",sizeof(auxC->valorCampo), auxT[t].tam);
 			if(strlen(auxC->valorCampo) > auxT[t].tam){   //A LINHA ESTAVA sizeof(auxC->valorCampo) > auxT[t].tam, sizeof(auxC->valorCampo) retorna o tamanho do ponteiro;
 				return ERRO_NO_TAMANHO_STRING;
 			}
@@ -655,6 +651,8 @@ int finalizaInsert(char *nome, column *c)
 	free(auxT); // Libera a memoria da estrutura.
 	return SUCCESS;
 }
+
+
 //----------------------------------------
 // EXCLUIR TUPLA BUFFER
 column * excluirTuplaBuffer(tp_buffer *buffer, tp_table *campos, struct fs_objects objeto, int page, int nTupla){
@@ -900,6 +898,7 @@ int validaatualizacao(char *nTabela){
 	fclose(dicionario);
 	return SUCCESS;
 }
+
 int dropTable(char * nTabela){
 	int teste;
 	teste = validaatualizacao(nTabela); //verifica se na tabela a ser excluida nao tem ligação de chave estrangeira
@@ -912,3 +911,71 @@ int dropTable(char * nTabela){
 	atualizaObjeto(nTabela);
 	return SUCCESS;
 }
+
+int ValidaCampos(char NomeDaTabela[], char *dt, int flag){
+	int Tam, i, EsquemaAcumu;
+	FILE *data;
+	char *BUFFER, *NomeAuxiliar;
+	
+	struct fs_objects objeto = leObjeto(NomeDaTabela);
+	tp_table *esquema = leSchema(objeto);
+	
+	if (esquema==ERRO_ABRIR_ESQUEMA)
+		return ERRO_O_VALOR_NAO_PODE_SER_INSERIDO;
+	
+	
+	Tam=tamTupla(esquema, objeto);
+	BUFFER=malloc(sizeof(char)*Tam);
+
+	if (BUFFER==NULL)
+		return ERRO_NAO_HA_ESPACO;
+	
+	NomeAuxiliar= (char *)malloc(sizeof(char)*strlen(NomeDaTabela)+6);
+	
+	if (NomeAuxiliar == NULL)
+		return ERRO_NAO_HA_ESPACO;
+	
+	strcpy(NomeAuxiliar, NomeDaTabela);
+	strcat(NomeAuxiliar, ".dat");
+		
+	data=fopen(NomeAuxiliar, "r");
+	
+	if (data==NULL){
+		return ERRO_ABRIR_ARQUIVO;
+	}
+
+	fseek(data, 0, SEEK_SET);
+	
+	while (!feof(data)){
+		for (i=EsquemaAcumu=0;i < objeto.qtdCampos; i++){
+			fread(BUFFER, sizeof(char), esquema[i].tam, data);
+			if (esquema[i].pk){
+				switch(esquema[i].tipo){
+					case 'S':
+						if (strcmp(BUFFER, dt)==0)
+							return -14;
+						break;
+					case 'I':
+						if (convertI(BUFFER) == convertI(dt))
+							return -14;
+						break;
+					case 'D':
+						if (convertD(BUFFER) == convertD(dt))
+							return -14;
+						break;
+					case 'C':
+						if (strncmp(BUFFER, dt, 1)==0)
+							return -14;
+						break;
+				}
+			}
+		}
+	}
+	
+	fclose(data);
+	if (!flag) 
+		return ERRO_A_FK_NAO_REFERENCIA_UMA_TABELA_OU_CHAVE_VALIDA;
+	
+	return SUCCESS;
+}
+

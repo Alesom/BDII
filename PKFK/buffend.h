@@ -236,3 +236,10 @@ int atualizaObjeto(char *nTabela);
 	No final o arquivo fs_schema.dat é excluido e o temporario renomeado para fs_esquema.dat
 */
 int atualizaSchema(int codigo);
+
+/* Essa função valida os campos de PK e FK
+ * Ela retorna se existe algum erro, ou sucesso.
+ * Se ela retornar algum erro, o mesmo será tratado na finalizaInsert função que chama a validaCampos
+ * Ela é chamada tanto para chave primária, quando para chave extrangeira, caso exista alguma arquivo com alguma tupla.*/
+int ValidaCampos(char NomeDaTabela[], char *dt, int flag);
+
